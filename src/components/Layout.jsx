@@ -1,13 +1,12 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
-import { auth } from "../config/firebase";
+import { useStore } from "../context/useStore";
 const Layout = () => {
+  const { logedin } = useStore();
   return (
     <div>
-      {auth?.currentUser?.email && 
-        <Navbar />
-      }
+      {logedin === true && <Navbar />}
       <Outlet />
     </div>
   );

@@ -45,7 +45,7 @@ export const UseStoreProvider = ({ children }) => {
     //   price: 0.5,
     // },
   ]);
-  const [logedin, setLogedin] = useState(false);
+  const [logedin, setLogedin] = useState(JSON.parse(localStorage.getItem("logedin")) || false);
   // useEffect(() => {
   //   const fetchItems = async() => {
   //     try{

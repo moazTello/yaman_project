@@ -14,6 +14,8 @@ const Navbar = () => {
       await signOut(auth);
       setLogedin(false);
       navigate("/yaman_project");
+      localStorage.setItem("auth",'');
+      localStorage.setItem("logedin",false);
     } catch (error) {
       console.log(error);
       alert(error);

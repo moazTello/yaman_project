@@ -6,7 +6,8 @@ import {
   // , googleProvider
 } from "../config/firebase";
 import {
-  createUserWithEmailAndPassword,
+  // createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
   // , signInWithPopup, signOut
 } from "firebase/auth";
 const Login = () => {
@@ -21,10 +22,12 @@ const Login = () => {
     // }
     if (userName && password) {
       try {
-        await createUserWithEmailAndPassword(auth, userName, password);
+        await signInWithEmailAndPassword(auth, userName, password);
         setLogedin(true);
         navigate("/yaman_project/items");
-        console.log(auth?.currentUser?.email);
+        localStorage.setItem("auth",JSON.stringify(auth?.currentUser));
+        localStorage.setItem("logedin",true);
+        console.log(localStorage.getItem("auth"))
       } catch (error) {
         console.log(error);
         alert(error);
