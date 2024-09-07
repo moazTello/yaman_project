@@ -94,9 +94,9 @@ export const UseStoreProvider = ({ children }) => {
         alert(error);
       }
     };
-    getItemsList();
+    logedin && getItemsList();
     // eslint-disable-next-line
-  }, []);
+  }, [logedin]);
   return (
     <StoreContext.Provider
       value={{
