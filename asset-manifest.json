@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/yaman_project/static/css/main.d9eb3054.css",
+    "main.js": "/yaman_project/static/js/main.716c1c70.js",
+    "static/media/khazix.jpg": "/yaman_project/static/media/khazix.1ad193df752151e66bc0.jpg",
+    "static/media/jhin.jpg": "/yaman_project/static/media/jhin.4e232714d6b236746703.jpg",
+    "static/media/swain.jpg": "/yaman_project/static/media/swain.6f48c97911f0419e4182.jpg",
+    "index.html": "/yaman_project/index.html",
+    "main.d9eb3054.css.map": "/yaman_project/static/css/main.d9eb3054.css.map",
+    "main.716c1c70.js.map": "/yaman_project/static/js/main.716c1c70.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.d9eb3054.css",
+    "static/js/main.716c1c70.js"
+  ]
+}
