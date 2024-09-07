@@ -1,0 +1,21 @@
+.items {
+  background: url("../assets/jhin.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.addItem {
+  background: url("../assets/khazix.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.addItemSwain {
+  background: url("../assets/swain.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.items_shadow {
+  background-color: rgba(0, 0, 0, 0.3);
+}

@@ -1,0 +1,45 @@
+{
+  "rowItems": [
+    {
+      "id": 1,
+      "name": "Snickers",
+      "price": 6
+    },
+    {
+      "id": 2,
+      "name": "Milk Man",
+      "price": 15
+    },
+    {
+      "id": 3,
+      "name": "Milka",
+      "price": 3
+    },
+    {
+      "id": 4,
+      "name": "Gover",
+      "price": 2.5
+    },
+    {
+      "id": 5,
+      "name": "Donesta",
+      "price": 4.5
+    },
+    {
+      "id": 6,
+      "name": "Cola",
+      "price": 2
+    },
+    {
+      "id": 7,
+      "name": "Master",
+      "price": 1.5
+    },
+    {
+      "id": 8,
+      "name": "Gomme",
+      "price": 0.5
+    }
+  ],
+  "actions": []
+}
