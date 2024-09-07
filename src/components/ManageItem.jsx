@@ -70,6 +70,13 @@ const ManageItem = () => {
         setUpdateItemAmount(null);
         setUpdateItemPrice(null);
         setUpdateBox(null);
+      } else if (
+        updateItemPrice === null ||
+        updateItemPrice === 0 ||
+        updateItemAmount === null ||
+        updateItemAmount === 0
+      ) {
+        return alert("Please insert price or amount to complete the procces.");
       } else {
         await updateDoc(itemUpdated, {
           itemAmount: updateItemAmount + item.itemAmount,
