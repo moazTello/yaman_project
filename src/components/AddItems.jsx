@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { addDoc } from "firebase/firestore";
 import { useStore } from "../context/useStore";
 import "../style/style.css";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const AddItems = () => {
   const navigate = useNavigate();
   const { rowItemsCollection } = useStore();
@@ -21,7 +21,7 @@ const AddItems = () => {
         chargeDate: new Date(),
       });
       alert("Item added successfuly !");
-      navigate('/yaman_project/manageItems')
+      navigate("/yaman_project/manageItems");
     } catch (error) {
       console.log(error);
       alert(error);
@@ -56,9 +56,16 @@ const AddItems = () => {
         >
           Add
         </button>
+        <Link
+          to="/yaman_project/manageItems"
+          className="w-96 flex justify-center items-center text-xl border-2 border-white hover:border-zinc-800 rounded-lg my-5 hover:bg-zinc-800 bg-opacity-50 hover:text-white min-h-[40px] "
+        >
+          Go Back
+        </Link>
       </div>
     </div>
   );
 };
 
 export default AddItems;
+// telloyaman@gmail.com

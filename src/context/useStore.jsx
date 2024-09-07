@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState } from "react";
-// import items_api from "../api/items_api";
 import { db } from "../config/firebase";
 import { getDocs, collection } from "firebase/firestore";
 export const StoreContext = createContext();
@@ -45,55 +44,45 @@ export const UseStoreProvider = ({ children }) => {
     //   price: 0.5,
     // },
   ]);
-  const [logedin, setLogedin] = useState(JSON.parse(localStorage.getItem("logedin")) || false);
-  // useEffect(() => {
-  //   const fetchItems = async() => {
-  //     try{
-  //       const response = await items_api.get("/rowItems");
-  //       setItems(response.data);
-  //       console.log(response);
-  //     }catch(error){
-  //       console.log(error);
-  //     }
-  //   }
-  //   fetchItems();
-  // }, [setItems]);
+  const [logedin, setLogedin] = useState(
+    JSON.parse(localStorage.getItem("logedin")) || false
+  );
   const [soldItems, setSoldItem] = useState([]);
   const rowItemsCollection = collection(db, "rowItems");
-  useEffect(() => {
-    const getItemsList = async () => {
-      try {
-        const response = await getDocs(rowItemsCollection);
-        const data = response?.docs?.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        if (data) {
-          const dataDTO = data?.map((info) => {
-            info.createdAt = info?.createdDate
-              ? (info?.createdDate?.seconds +
-                  info?.createdDate?.nanoseconds * 10 ** -9) *
-                1000
-              : null;
-            info.endededAt = info?.enddDate
-              ? (info?.enddDate?.seconds +
-                  info?.endDate?.nanoseconds * 10 ** -9) *
-                1000
-              : null;
-            info.chargedAt = info?.chargeDate
-              ? (info?.chargeDate?.seconds +
-                  info?.chargeDate?.nanoseconds * 10 ** -9) *
-                1000
-              : null;
-            return info;
-          });
-          setItems(dataDTO);
-        }
-      } catch (error) {
-        console.log(error);
-        alert(error);
+  const getItemsList = async () => {
+    try {
+      const response = await getDocs(rowItemsCollection);
+      const data = response?.docs?.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      if (data) {
+        const dataDTO = data?.map((info) => {
+          info.createdAt = info?.createdDate
+            ? (info?.createdDate?.seconds +
+                info?.createdDate?.nanoseconds * 10 ** -9) *
+              1000
+            : null;
+          info.endededAt = info?.enddDate
+            ? (info?.enddDate?.seconds +
+                info?.endDate?.nanoseconds * 10 ** -9) *
+              1000
+            : null;
+          info.chargedAt = info?.chargeDate
+            ? (info?.chargeDate?.seconds +
+                info?.chargeDate?.nanoseconds * 10 ** -9) *
+              1000
+            : null;
+          return info;
+        });
+        setItems(dataDTO);
       }
-    };
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
+  };
+  useEffect(() => {
     logedin && getItemsList();
     // eslint-disable-next-line
   }, [logedin]);
@@ -111,6 +100,7 @@ export const UseStoreProvider = ({ children }) => {
         logedin,
         setLogedin,
         rowItemsCollection,
+        getItemsList,
       }}
     >
       {children}

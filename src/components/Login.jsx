@@ -7,7 +7,7 @@ import {
 } from "../config/firebase";
 import {
   // createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
   // , signInWithPopup, signOut
 } from "firebase/auth";
 const Login = () => {
@@ -16,18 +16,13 @@ const Login = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const handleLogin = async () => {
-    // if (userName === "Yaman_Tello" && password === "Yaman_Tello") {
-    //   setLogedin(true);
-    //   navigate("/yaman_project/items");
-    // }
     if (userName && password) {
       try {
         await signInWithEmailAndPassword(auth, userName, password);
         setLogedin(true);
         navigate("/yaman_project/items");
-        localStorage.setItem("auth",JSON.stringify(auth?.currentUser));
-        localStorage.setItem("logedin",true);
-        console.log(localStorage.getItem("auth"))
+        localStorage.setItem("auth", JSON.stringify(auth?.currentUser));
+        localStorage.setItem("logedin", true);
       } catch (error) {
         console.log(error);
         alert(error);
@@ -81,3 +76,4 @@ const Login = () => {
 };
 
 export default Login;
+// telloyaman@gmail.com

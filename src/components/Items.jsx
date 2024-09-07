@@ -8,7 +8,7 @@ const Items = () => {
   const clickHandler = (item) => {
     const newList = [...soldItems, item];
     setSoldItem(newList);
-    const newprice = price + item.price;
+    const newprice = price + item.itemPrice;
     setPrice(newprice);
   };
 
