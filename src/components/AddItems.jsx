@@ -5,7 +5,7 @@ import "../style/style.css";
 import { Link, useNavigate } from "react-router-dom";
 const AddItems = () => {
   const navigate = useNavigate();
-  const { rowItemsCollection } = useStore();
+  const { rowItemsCollection, backgroundImage } = useStore();
   const [itemName, setItemName] = useState("");
   const [itemAmount, setItemAmount] = useState(0);
   const [itemPrice, setItemPrice] = useState(0);
@@ -28,7 +28,11 @@ const AddItems = () => {
     }
   };
   return (
-    <div className="addItemSwain w-full flex justify-center items-start min-h-[100vh] max-h-[100vh]">
+    <div
+      className={`${
+        backgroundImage ? "addItemSwain" : "tableBackground"
+      }  w-full flex justify-center items-start min-h-[100vh] max-h-[100vh]`}
+    >
       <div className="items_shadow flex flex-col w-full min-h-[100vh] max-h-[100vh] p-10 overflow-y-scroll">
         <p className="w-full text-2xl text-white font-bold my-5 ">
           Add New Item

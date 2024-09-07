@@ -9,11 +9,11 @@ import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import "../style/style.css";
 const ManageItem = () => {
-  const { getItemsList } = useStore();
+  const { getItemsList, boxesView, toggleBoxesView, backgroundImage } =
+    useStore();
   const [updateBox, setUpdateBox] = useState(null);
   const [updateItemAmount, setUpdateItemAmount] = useState(null);
   const [updateItemPrice, setUpdateItemPrice] = useState(null);
-
   const {
     items,
     // , setItems, rowItemsCollection
@@ -88,108 +88,197 @@ const ManageItem = () => {
     }
   };
   return (
-    <div className="addItem w-full flex justify-center items-start min-h-[100vh] max-h-[100vh] relative">
+    <div
+      className={`${
+        backgroundImage ? "addItem" : "tableBackground"
+      }  w-full flex justify-center items-start min-h-[100vh] max-h-[100vh] relative`}
+    >
       <div className="items_shadow w-full min-h-[100vh] max-h-[100vh] p-10 overflow-y-scroll">
-        {items?.map((item) => (
-          <div
-            key={item.id}
-            className="min-w-80 text-white hover:font-bold hover:bg-slate-50 hover:text-violet-400 float-left m-5 p-10 min-h-32 flex flex-col justify-center items-center border-2 border-violet-400 rounded-md"
+        <div className="w-full flex items-center justify-end mb-3">
+          <button
+            onClick={toggleBoxesView}
+            className="min-w-20 min-h-20 m-2 flex justify-center items-center"
           >
-            <p className="mb-5 text-2xl"> {item.itemName} </p>
-            <div className="w-full flex items-center justify-between">
-              <p>Amount : </p>
-              <p>{item.itemAmount}</p>
-            </div>
-            <div className="w-full flex items-center justify-between">
-              <p>Create : </p>
-              <p>
-                {item.createdAt
-                  ? moment(item.createdAt).format("YYYY-MM-DD")
-                  : "-"}
-              </p>
-            </div>
-            <div className="w-full flex items-center justify-between">
-              <p>End : </p>
-              <p>
-                {item.endedAt ? moment(item.endedAt).format("YYYY-MM-DD") : "-"}
-              </p>
-            </div>
-            <div className="w-full flex items-center justify-between">
-              <p>Charge : </p>
-              <p>
-                {item.chargedAt
-                  ? moment(item.chargedAt).format("YYYY-MM-DD")
-                  : "-"}
-              </p>
-            </div>
-            <div className="w-full flex items-center justify-between">
-              <p>Available : </p>
-              <p>{item.itemAvailable ? "T" : "F"}</p>
-            </div>
-            <div className="w-full flex items-center justify-between">
-              <p>Price : </p>
-              <p>{item.itemPrice}$</p>
-            </div>
-            <div className="w-full flex justify-evenly items-center">
-              <button
-                onClick={() => handleDelete(item)}
-                className="w-8 h-8 flex justify-center rounded-md items-center mt-5 text-white hover:bg-slate-50 bg-red-500 hover:border-2 hover:border-violet-400 hover:text-violet-400"
-              >
-                <FaTrashCan />
-              </button>
-              <button
-                onClick={() => setUpdateBox(item.id)}
-                className="w-8 h-8 flex justify-center rounded-md items-center mt-5 text-white hover:bg-slate-50 bg-green-500 hover:border-2 hover:border-violet-400 hover:text-violet-400"
-              >
-                <FaTruck />
-              </button>
-            </div>
+            <p className="w-16 h-16 text-slate-50 hover:text-violet-400 hover:bg-slate-900 hover:border-violet-400 border-2 border-slate-50 rounded-lg bg-base-200 flex justify-center items-center text-2xl">
+              <span className="text-sm mr-1">
+                {boxesView ? "Boxes" : "Table"}
+              </span>
+            </p>
+          </button>
+          <Link
+            to="/yaman_project/addItem"
+            className="min-w-20 min-h-20 m-2 flex justify-center items-center"
+          >
+            <p className="w-16 h-16 text-slate-50 hover:text-violet-400 hover:bg-slate-900 hover:border-violet-400 border-2 border-slate-50 rounded-lg bg-base-200 flex justify-center items-center text-2xl">
+              <span className="text-sm mr-1"> + </span> <IoFastFoodOutline />
+            </p>
+          </Link>
+        </div>
+        {boxesView && (
+          <div className="overflow-x-auto">
+            <table className="table">
+              <thead>
+                <tr className="bg-base-200 text-white">
+                  <th></th>
+                  <th>Name</th>
+                  <th>Amount</th>
+                  <th>Created At</th>
+                  <th>Ended At</th>
+                  <th>Charged At</th>
+                  <th>Available</th>
+                  <th>Price</th>
+                  <th>Delete</th>
+                  <th>Charge</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items?.map((item, index) => (
+                  <tr className="table_row hover:bg-base-200">
+                    <th>{index + 1}</th>
+                    <td>{item.itemName} </td>
+                    <td>{item.itemAmount}</td>
+                    <td>
+                      {" "}
+                      {item.createdAt
+                        ? moment(item.createdAt).format("YYYY-MM-DD")
+                        : "-"}
+                    </td>
+                    <td>
+                      {" "}
+                      {item.endedAt
+                        ? moment(item.endedAt).format("YYYY-MM-DD")
+                        : "-"}
+                    </td>
+
+                    <td>
+                      {" "}
+                      {item.chargedAt
+                        ? moment(item.chargedAt).format("YYYY-MM-DD")
+                        : "-"}
+                    </td>
+
+                    <td>{item.itemAvailable ? "T" : "F"}</td>
+                    <td>{item.itemPrice}$</td>
+                    <td>
+                      <button
+                        onClick={() => handleDelete(item)}
+                        className="w-8 h-8 flex justify-center rounded-md items-center text-white hover:bg-slate-50 bg-red-500 hover:border-2 hover:border-violet-400 hover:text-violet-400"
+                      >
+                        <FaTrashCan />
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => setUpdateBox(item.id)}
+                        className="w-8 h-8 flex justify-center rounded-md items-center text-white hover:bg-slate-50 bg-green-500 hover:border-2 hover:border-violet-400 hover:text-violet-400"
+                      >
+                        <FaTruck />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {!boxesView &&
+          items?.map((item) => (
             <div
-              style={{ display: updateBox === item.id ? "flex" : "none" }}
-              className="w-full bg_opacity min-h-full flex justify-center items-center absolute top-0 left-0 z-10"
+              key={item.id}
+              className="min-w-80 text-white hover:font-bold hover:bg-slate-50 hover:text-violet-400 float-left m-5 p-10 min-h-32 flex flex-col justify-center items-center border-2 border-violet-400 rounded-md"
             >
-              <div className="w-[70%] flex flex-col p-10 rounded-lg border-2 border-violet-500">
-                <div className="w-full flex justify-between">
-                  <p className="font-bold text-2xl text-white mr-auto">
-                    Charge {item.itemName}
-                  </p>
-                  <button
-                    onClick={() => setUpdateBox(null)}
-                    className="text-white hover:text-red-500"
-                  >
-                    <IoCloseSharp size={30} />
-                  </button>
-                </div>
-                <input
-                  type="number"
-                  className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] my-5 border-slate-200 px-3"
-                  placeholder="Item Amount"
-                  onChange={(e) => setUpdateItemAmount(Number(e.target.value))}
-                />
-                <input
-                  type="number"
-                  className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] my-5 border-slate-200 px-3"
-                  placeholder="Item Price"
-                  onChange={(e) => setUpdateItemPrice(Number(e.target.value))}
-                />
+              <p className="mb-5 text-2xl"> {item.itemName} </p>
+              <div className="w-full flex items-center justify-between">
+                <p>Amount : </p>
+                <p>{item.itemAmount}</p>
+              </div>
+              <div className="w-full flex items-center justify-between">
+                <p>Create : </p>
+                <p>
+                  {item.createdAt
+                    ? moment(item.createdAt).format("YYYY-MM-DD")
+                    : "-"}
+                </p>
+              </div>
+              <div className="w-full flex items-center justify-between">
+                <p>End : </p>
+                <p>
+                  {item.endedAt
+                    ? moment(item.endedAt).format("YYYY-MM-DD")
+                    : "-"}
+                </p>
+              </div>
+              <div className="w-full flex items-center justify-between">
+                <p>Charge : </p>
+                <p>
+                  {item.chargedAt
+                    ? moment(item.chargedAt).format("YYYY-MM-DD")
+                    : "-"}
+                </p>
+              </div>
+              <div className="w-full flex items-center justify-between">
+                <p>Available : </p>
+                <p>{item.itemAvailable ? "T" : "F"}</p>
+              </div>
+              <div className="w-full flex items-center justify-between">
+                <p>Price : </p>
+                <p>{item.itemPrice}$</p>
+              </div>
+              <div className="w-full flex justify-evenly items-center">
                 <button
-                  onClick={() => handleUpdate(item)}
-                  className="w-96 text-xl border-2 border-white hover:border-red-500 rounded-lg my-5 hover:bg-red-500 bg-opacity-50 hover:text-white min-h-[40px] "
+                  onClick={() => handleDelete(item)}
+                  className="w-8 h-8 flex justify-center rounded-md items-center mt-5 text-white hover:bg-slate-50 bg-red-500 hover:border-2 hover:border-violet-400 hover:text-violet-400"
                 >
-                  Add
+                  <FaTrashCan />
+                </button>
+                <button
+                  onClick={() => setUpdateBox(item.id)}
+                  className="w-8 h-8 flex justify-center rounded-md items-center mt-5 text-white hover:bg-slate-50 bg-green-500 hover:border-2 hover:border-violet-400 hover:text-violet-400"
+                >
+                  <FaTruck />
                 </button>
               </div>
+              <div
+                style={{ display: updateBox === item.id ? "flex" : "none" }}
+                className="w-full bg_opacity min-h-full flex justify-center items-center absolute top-0 left-0 z-10"
+              >
+                <div className="w-[70%] flex flex-col p-10 rounded-lg border-2 border-violet-500">
+                  <div className="w-full flex justify-between">
+                    <p className="font-bold text-2xl text-white mr-auto">
+                      Charge {item.itemName}
+                    </p>
+                    <button
+                      onClick={() => setUpdateBox(null)}
+                      className="text-white hover:text-red-500"
+                    >
+                      <IoCloseSharp size={30} />
+                    </button>
+                  </div>
+                  <input
+                    type="number"
+                    className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mt-10 mb-5 border-slate-200 px-3"
+                    placeholder="Item Amount"
+                    onChange={(e) =>
+                      setUpdateItemAmount(Number(e.target.value))
+                    }
+                  />
+                  <input
+                    type="number"
+                    className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] my-5 border-slate-200 px-3"
+                    placeholder="Item Price"
+                    onChange={(e) => setUpdateItemPrice(Number(e.target.value))}
+                  />
+                  <button
+                    onClick={() => handleUpdate(item)}
+                    className="w-96 text-xl border-2 border-white hover:border-red-500 rounded-lg my-5 hover:bg-red-500 bg-opacity-50 hover:text-white min-h-[40px] "
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
-        <Link
-          to="/yaman_project/addItem"
-          className="min-w-44 min-h-32 m-5 flex justify-center items-center float-left"
-        >
-          <p className="w-16 h-16 text-slate-50 hover:text-violet-400 hover:bg-slate-50 hover:border-violet-400 border-2 border-slate-50 rounded-full flex justify-center items-center text-2xl">
-            <span className="text-sm mr-1"> + </span> <IoFastFoodOutline />
-          </p>
-        </Link>
+          ))}
       </div>
     </div>
   );

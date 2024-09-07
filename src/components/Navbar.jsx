@@ -5,17 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { HiOutlineLogout } from "react-icons/hi";
 import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
-
+import { IoMdPhotos } from "react-icons/io";
+import { FaEyeSlash } from "react-icons/fa";
 const Navbar = () => {
   const navigate = useNavigate();
-  const { setLogedin } = useStore();
+  const { setLogedin, toggleBackgroundImage, toggleNavbar } = useStore();
   const logout = async () => {
     try {
       await signOut(auth);
       setLogedin(false);
       navigate("/yaman_project");
-      localStorage.setItem("auth",'');
-      localStorage.setItem("logedin",false);
+      localStorage.setItem("auth", "");
+      localStorage.setItem("logedin", false);
     } catch (error) {
       console.log(error);
       alert(error);
@@ -36,7 +37,19 @@ const Navbar = () => {
       >
         Items
       </Link>
-      <button className="mr-10 ml-auto hover:text-amber-400" onClick={logout}>
+      <button
+        className="mr-10 ml-auto hover:text-amber-400"
+        onClick={toggleNavbar}
+      >
+        <FaEyeSlash size={28} />
+      </button>
+      <button
+        className="mr-10 hover:text-amber-400"
+        onClick={toggleBackgroundImage}
+      >
+        <IoMdPhotos size={28} />
+      </button>
+      <button className="mr-10 hover:text-amber-400" onClick={logout}>
         <HiOutlineLogout size={30} />
       </button>
     </div>

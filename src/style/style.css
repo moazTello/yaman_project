@@ -16,9 +16,18 @@
   background-repeat: no-repeat;
   background-position: center;
 }
+.tableBackground {
+  background: url("../assets/table.jpeg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
 .items_shadow {
   background-color: rgba(0, 0, 0, 0.3);
 }
 .bg_opacity {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.table_row {
   background-color: rgba(0, 0, 0, 0.8);
 }

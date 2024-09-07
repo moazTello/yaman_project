@@ -44,6 +44,37 @@ export const UseStoreProvider = ({ children }) => {
     //   price: 0.5,
     // },
   ]);
+  const [backgroundImage, setBackgroundImage] = useState(
+    JSON.parse(localStorage.getItem("background_image")) || false
+  );
+  const [boxesView, setBoxesView] = useState(
+    JSON.parse(localStorage.getItem("boxesView")) || false
+  );
+  const [navbarVisible, setNavbarVisible] = useState(
+    JSON.parse(localStorage.getItem("navbarVisible")) || true
+  );
+
+  const toggleBoxesView = () => {
+    setBoxesView((old) => !old);
+    localStorage.setItem(
+      "boxesView",
+      !JSON.parse(localStorage.getItem("boxesView"))
+    );
+  };
+  const toggleBackgroundImage = () => {
+    setBackgroundImage((old) => !old);
+    localStorage.setItem(
+      "background_image",
+      !JSON.parse(localStorage.getItem("background_image"))
+    );
+  };
+  const toggleNavbar = () => {
+    setNavbarVisible((old) => !old);
+    localStorage.setItem(
+      "navbarVisible",
+      !JSON.parse(localStorage.getItem("navbarVisible"))
+    );
+  };
   const [logedin, setLogedin] = useState(
     JSON.parse(localStorage.getItem("logedin")) || false
   );
@@ -101,6 +132,12 @@ export const UseStoreProvider = ({ children }) => {
         setLogedin,
         rowItemsCollection,
         getItemsList,
+        toggleBoxesView,
+        boxesView,
+        backgroundImage,
+        toggleBackgroundImage,
+        navbarVisible,
+        toggleNavbar,
       }}
     >
       {children}
