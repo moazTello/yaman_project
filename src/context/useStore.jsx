@@ -91,6 +91,7 @@ export const UseStoreProvider = ({ children }) => {
         }
       } catch (error) {
         console.log(error);
+        alert(error);
       }
     };
     getItemsList();

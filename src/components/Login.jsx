@@ -27,6 +27,7 @@ const Login = () => {
         console.log(auth?.currentUser?.email);
       } catch (error) {
         console.log(error);
+        alert(error);
       }
     }
   };

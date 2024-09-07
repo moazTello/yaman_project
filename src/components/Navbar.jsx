@@ -16,6 +16,7 @@ const Navbar = () => {
       navigate("/yaman_project");
     } catch (error) {
       console.log(error);
+      alert(error);
     }
   };
   return (

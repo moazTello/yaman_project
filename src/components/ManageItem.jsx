@@ -22,6 +22,7 @@ const ManageItem = () => {
       await deleteDoc(itemDeleted);
     } catch (error) {
       console.log(error);
+      alert(error);
     }
     // if(item.itemAmount !== 0){
     //   return alert("There are many pieces yet, you can't delete the item !")

@@ -24,6 +24,7 @@ const AddItems = () => {
       navigate('/yaman_project/manageItems')
     } catch (error) {
       console.log(error);
+      alert(error);
     }
   };
   return (
