@@ -1,7 +1,16 @@
 import React from "react";
 import { useStore } from "../context/useStore";
+import { FaPaintBrush } from "react-icons/fa";
+
 const Amount = () => {
-  const { price, soldItems, setSoldItem, setPrice } = useStore();
+  const {
+    price,
+    soldItems,
+    setSoldItem,
+    setPrice,
+    toggleTableColor,
+    tableColor,
+  } = useStore();
   const handleClear = () => {
     setSoldItem([]);
     setPrice(0);
@@ -12,12 +21,51 @@ const Amount = () => {
         Total : {price} $
       </p>
       {soldItems.length > 0 && (
-        <div className="flex md:ml-12 overflow-scroll max-w-[100%] mt-3 md:mt-0 md:max-w-[60%] border-2 rounded-md border-slate-100 py-5">
-          {soldItems?.map((item, index) => (
-            <p key={index} className="text-slate-100 mx-5 min-w-28">
-              {item.itemName} : {item.itemPrice} $
-            </p>
-          ))}
+        // <div className="flex md:ml-12 overflow-scroll max-w-[100%] mt-3 md:mt-0 md:max-w-[60%] border-2 rounded-md border-slate-100 py-5">
+        //   {soldItems?.map((item, index) => (
+        //     <p key={index} className="text-slate-100 mx-5 min-w-28">
+        //       {item.itemName} : {item.itemPrice} $
+        //     </p>
+        //   ))}
+        // </div>
+        <div className="overflow-auto mx-auto rounded-lg w-[65%] max-h-52">
+          <table className="table">
+            <thead>
+              <tr
+                className={`${
+                  tableColor
+                    ? "bg-base-200 text-white"
+                    : "text-base-200 bg-slate-100"
+                } `}
+              >
+                <th>
+                  <button onClick={toggleTableColor}>
+                    <FaPaintBrush size={16} />
+                  </button>
+                </th>
+                <th>Name</th>
+                <th>Amount</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {soldItems?.map((item, index) => (
+                <tr
+                  key={index}
+                  className={`${
+                    tableColor
+                      ? "table_row w-full hover:bg-base-200"
+                      : "w-full hover:bg-slate-300 bg-slate-200 text-base-200"
+                  } `}
+                >
+                  <th>{index + 1}</th>
+                  <td>{item.item.itemName} </td>
+                  <td>{item.localAmount}</td>
+                  <td>{item.item.itemPrice}$</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
       <button

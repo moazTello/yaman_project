@@ -3,6 +3,8 @@ import { useStore } from "../context/useStore";
 import Amount from "./Amount";
 import "../style/style.css";
 import { FaPaintBrush } from "react-icons/fa";
+import { FaCircleCheck } from "react-icons/fa6";
+import { IoIosCloseCircle } from "react-icons/io";
 
 const Items = () => {
   const {
@@ -18,10 +20,27 @@ const Items = () => {
     toggleTableColor,
   } = useStore();
   const clickHandler = (item) => {
-    const newList = [...soldItems, item];
-    setSoldItem(newList);
-    const newprice = price + item.itemPrice;
-    setPrice(newprice);
+    if (item.itemAmount === 0) {
+      return alert(`No more ${item.itemName}`);
+    }
+    const existingItem = soldItems.find((soldItem) => soldItem.item === item);
+    if (existingItem) {
+      if (existingItem?.item?.itemAmount === existingItem?.localAmount) {
+        return alert(`No more ${item.itemName}`);
+      }
+      const updatedList = soldItems.map((soldItem) =>
+        soldItem.item === item
+          ? { ...soldItem, localAmount: soldItem.localAmount + 1 }
+          : soldItem
+      );
+      setSoldItem(updatedList);
+    } else {
+      const newList = [...soldItems, { item: item, localAmount: 1 }];
+      setSoldItem(newList);
+    }
+
+    const newPrice = price + item.itemPrice;
+    setPrice(newPrice);
   };
 
   return (
@@ -45,7 +64,7 @@ const Items = () => {
             </button>
           </div>
           {boxesView && (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto rounded-lg">
               <table className="table">
                 <thead>
                   <tr
@@ -103,6 +122,7 @@ const Items = () => {
                   )}
                   {items?.map((item, index) => (
                     <tr
+                      key={index}
                       className={`${
                         tableColor
                           ? "table_row w-full hover:bg-base-200"
@@ -112,7 +132,19 @@ const Items = () => {
                       <th>{index + 1}</th>
                       <td>{item.itemName} </td>
                       <td>{item.itemAmount}</td>
-                      <td>{item.itemAvailable ? "T" : "F"}</td>
+                      <td>
+                        {item.itemAmount > 0 ? (
+                          <FaCircleCheck
+                            size={22}
+                            className="text-green-500 ml-4"
+                          />
+                        ) : (
+                          <IoIosCloseCircle
+                            size={28}
+                            className="text-red-500 ml-3"
+                          />
+                        )}
+                      </td>
                       <td>{item.itemPrice}$</td>
                       <td>
                         <button

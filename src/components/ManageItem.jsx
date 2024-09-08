@@ -131,7 +131,7 @@ const ManageItem = () => {
           </Link>
         </div>
         {boxesView && (
-          <div className="overflow-x-auto h-fit">
+          <div className="overflow-x-auto rounded-lg h-fit">
             <table className="table">
               <thead>
                 <tr
