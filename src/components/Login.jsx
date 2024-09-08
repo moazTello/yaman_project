@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useStore } from "../context/useStore";
 import { useNavigate } from "react-router-dom";
 import {
@@ -10,6 +10,7 @@ import {
   signInWithEmailAndPassword,
   // , signInWithPopup, signOut
 } from "firebase/auth";
+
 const Login = () => {
   const navigate = useNavigate();
   const { setLogedin } = useStore();
@@ -29,6 +30,10 @@ const Login = () => {
       }
     }
   };
+  useEffect(() => {
+    JSON.parse(localStorage.getItem("logedin")) && navigate("/yaman_project/items");
+    // eslint-disable-next-line
+  },[]);
   //   const handleLoginGoogle = async () => {
   //       try {
   //         await signInWithPopup(auth, googleProvider);
