@@ -53,7 +53,9 @@ export const UseStoreProvider = ({ children }) => {
   const [navbarVisible, setNavbarVisible] = useState(
     JSON.parse(localStorage.getItem("navbarVisible")) || true
   );
-
+  const [tableColor, setTableColor] = useState(
+    JSON.parse(localStorage.getItem("tableColor")) || false
+  );
   const toggleBoxesView = () => {
     setBoxesView((old) => !old);
     localStorage.setItem(
@@ -73,6 +75,13 @@ export const UseStoreProvider = ({ children }) => {
     localStorage.setItem(
       "navbarVisible",
       !JSON.parse(localStorage.getItem("navbarVisible"))
+    );
+  };
+  const toggleTableColor = () => {
+    setTableColor((old) => !old);
+    localStorage.setItem(
+      "tableColor",
+      !JSON.parse(localStorage.getItem("tableColor"))
     );
   };
   const [logedin, setLogedin] = useState(
@@ -138,6 +147,8 @@ export const UseStoreProvider = ({ children }) => {
         toggleBackgroundImage,
         navbarVisible,
         toggleNavbar,
+        toggleTableColor,
+        tableColor,
       }}
     >
       {children}

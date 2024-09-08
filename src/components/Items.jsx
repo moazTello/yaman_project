@@ -2,6 +2,7 @@ import React from "react";
 import { useStore } from "../context/useStore";
 import Amount from "./Amount";
 import "../style/style.css";
+import { FaPaintBrush } from "react-icons/fa";
 
 const Items = () => {
   const {
@@ -13,6 +14,8 @@ const Items = () => {
     toggleBoxesView,
     boxesView,
     backgroundImage,
+    tableColor,
+    toggleTableColor,
   } = useStore();
   const clickHandler = (item) => {
     const newList = [...soldItems, item];
@@ -45,8 +48,18 @@ const Items = () => {
             <div className="overflow-x-auto">
               <table className="table">
                 <thead>
-                  <tr className="bg-base-200 text-white">
-                    <th></th>
+                  <tr
+                    className={`${
+                      tableColor
+                        ? "bg-base-200 text-white"
+                        : "text-base-200 bg-slate-100"
+                    } `}
+                  >
+                    <th>
+                      <button onClick={toggleTableColor}>
+                        <FaPaintBrush size={16} />
+                      </button>
+                    </th>
                     <th>Name</th>
                     <th>Amount</th>
                     <th>Available</th>
@@ -56,7 +69,13 @@ const Items = () => {
                 </thead>
                 <tbody>
                   {!items.length && (
-                    <tr className="table_row w-full hover:bg-base-200">
+                    <tr
+                      className={`${
+                        tableColor
+                          ? "table_row w-full hover:bg-base-200"
+                          : "w-full hover:bg-base-200 bg-slate-200 text-base-200"
+                      } `}
+                    >
                       <td colSpan="10">
                         <div
                           className="flex justify-center my-3 w-full"
@@ -83,7 +102,13 @@ const Items = () => {
                     </tr>
                   )}
                   {items?.map((item, index) => (
-                    <tr className="table_row hover:bg-base-200">
+                    <tr
+                      className={`${
+                        tableColor
+                          ? "table_row w-full hover:bg-base-200"
+                          : "w-full hover:bg-slate-300 bg-slate-200 text-base-200"
+                      } `}
+                    >
                       <th>{index + 1}</th>
                       <td>{item.itemName} </td>
                       <td>{item.itemAmount}</td>

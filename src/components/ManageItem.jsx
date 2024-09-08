@@ -2,16 +2,24 @@ import React, { useState } from "react";
 import { useStore } from "../context/useStore";
 import { FaTrashCan } from "react-icons/fa6";
 import { IoFastFoodOutline, IoCloseSharp } from "react-icons/io5";
-import { FaTruck } from "react-icons/fa";
+import { FaTruck, FaPaintBrush } from "react-icons/fa";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
+import { FaCircleCheck } from "react-icons/fa6";
+import { IoIosCloseCircle } from "react-icons/io";
 import "../style/style.css";
 const ManageItem = () => {
   const [loading, setLoading] = useState(false);
-  const { getItemsList, boxesView, toggleBoxesView, backgroundImage } =
-    useStore();
+  const {
+    getItemsList,
+    boxesView,
+    toggleBoxesView,
+    backgroundImage,
+    toggleTableColor,
+    tableColor,
+  } = useStore();
   const [updateBox, setUpdateBox] = useState(null);
   const [updateItemAmount, setUpdateItemAmount] = useState(null);
   const [updateItemPrice, setUpdateItemPrice] = useState(null);
@@ -30,6 +38,8 @@ const ManageItem = () => {
     try {
       const itemDeleted = doc(db, "rowItems", item.id);
       await deleteDoc(itemDeleted);
+      await getItemsList();
+      alert("Item deleted successfuly!");
     } catch (error) {
       console.log(error);
       alert(error);
@@ -43,7 +53,7 @@ const ManageItem = () => {
     if (!result) return;
     try {
       const itemUpdated = doc(db, "rowItems", item.id);
-      if (updateItemAmount === null && updateItemPrice !== null ) {
+      if (updateItemAmount === null && updateItemPrice !== null) {
         // eslint-disable-next-line no-restricted-globals
         var resultPrice = confirm(
           "You are about change just the price, Does it real ?"
@@ -57,7 +67,7 @@ const ManageItem = () => {
         await getItemsList();
         alert(`${item.itemName} Price Updated successfully`);
         setUpdateBox(null);
-      } else if (updateItemPrice === null && updateItemAmount !== null ) {
+      } else if (updateItemPrice === null && updateItemAmount !== null) {
         // eslint-disable-next-line no-restricted-globals
         var resultAmount = confirm(
           "You are about leave the old Price, Does it suitable ?"
@@ -72,10 +82,7 @@ const ManageItem = () => {
         await getItemsList();
         alert(`${item.itemName} Charged successfully`);
         setUpdateBox(null);
-      } else if (
-        updateItemPrice === null &&
-        updateItemAmount === null
-      ) {
+      } else if (updateItemPrice === null && updateItemAmount === null) {
         setLoading(false);
         return alert("Please insert price or amount to complete the procces.");
       } else {
@@ -127,8 +134,18 @@ const ManageItem = () => {
           <div className="overflow-x-auto h-fit">
             <table className="table">
               <thead>
-                <tr className="bg-base-200 text-white">
-                  <th></th>
+                <tr
+                  className={`${
+                    tableColor
+                      ? "bg-base-200 text-white"
+                      : "text-base-200 bg-slate-100"
+                  } `}
+                >
+                  <th>
+                    <button onClick={toggleTableColor}>
+                      <FaPaintBrush size={16} />
+                    </button>
+                  </th>
                   <th>Name</th>
                   <th>Amount</th>
                   <th>Created At</th>
@@ -142,7 +159,13 @@ const ManageItem = () => {
               </thead>
               <tbody>
                 {!items.length && (
-                  <tr className="table_row w-full hover:bg-base-200">
+                  <tr
+                    className={`${
+                      tableColor
+                        ? "table_row w-full hover:bg-base-200"
+                        : "w-full hover:bg-base-200 bg-slate-200 text-base-200"
+                    } `}
+                  >
                     <td colSpan="10">
                       <div
                         className="flex justify-center my-3 w-full"
@@ -169,7 +192,14 @@ const ManageItem = () => {
                   </tr>
                 )}
                 {items?.map((item, index) => (
-                  <tr key={index} className="table_row hover:bg-base-200">
+                  <tr
+                    key={index}
+                    className={`${
+                      tableColor
+                        ? "table_row w-full hover:bg-base-200"
+                        : "w-full hover:bg-slate-300 bg-slate-200 text-base-200"
+                    } `}
+                  >
                     <th>{index + 1}</th>
                     <td>{item.itemName} </td>
                     <td>{item.itemAmount}</td>
@@ -193,7 +223,19 @@ const ManageItem = () => {
                         : "-"}
                     </td>
 
-                    <td>{item.itemAvailable ? "T" : "F"}</td>
+                    <td>
+                      {item.itemAmount > 0 ? (
+                        <FaCircleCheck
+                          size={22}
+                          className="text-green-500 ml-4"
+                        />
+                      ) : (
+                        <IoIosCloseCircle
+                          size={28}
+                          className="text-red-500 ml-3"
+                        />
+                      )}
+                    </td>
                     <td>{item.itemPrice}$</td>
                     <td>
                       <button
@@ -280,7 +322,13 @@ const ManageItem = () => {
                 </div>
                 <div className="w-full flex items-center justify-between">
                   <p>Available : </p>
-                  <p>{item.itemAvailable ? "T" : "F"}</p>
+                  <p>
+                    {item.itemAmount > 0 ? (
+                      <FaCircleCheck size={22} className="text-green-500" />
+                    ) : (
+                      <IoIosCloseCircle size={27} className="text-red-500" />
+                    )}
+                  </p>
                 </div>
                 <div className="w-full flex items-center justify-between">
                   <p>Price : </p>
