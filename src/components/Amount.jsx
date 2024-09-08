@@ -7,7 +7,7 @@ const Amount = () => {
     setPrice(0);
   };
   return (
-    <div className="w-full min-h-20 flex flex-col items-center bg-zinc-800 md:flex-row fixed bottom-0 py-5">
+    <div className="w-full min-h-20 flex flex-col items-center bg-base-200 md:flex-row fixed bottom-0 py-5">
       <p className="text-slate-100 text-lg ml-5 mt-3 md:mt-0 font-medium">
         Total : {price} $
       </p>
