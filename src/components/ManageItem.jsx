@@ -81,10 +81,15 @@ const ManageItem = () => {
           "You are about leave the old Price, Does it suitable ?"
         );
         if (!resultAmount) return;
-        await updateDoc(itemUpdated, {
-          itemAmount: updateItemAmount + item.itemAmount,
-          chargeDate: new Date(),
-        });
+        updateItemAmount > 0
+          ? await updateDoc(itemUpdated, {
+              itemAmount: updateItemAmount + item.itemAmount,
+              chargeDate: new Date(),
+            })
+          : updateItemAmount < 0 &&
+            (await updateDoc(itemUpdated, {
+              itemAmount: updateItemAmount + item.itemAmount,
+            }));
         setUpdateItemAmount(null);
         setUpdateItemPrice(null);
         await getItemsList();
