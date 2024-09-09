@@ -37,6 +37,15 @@ const Navbar = () => {
       >
         Items
       </Link>
+      {JSON.parse(localStorage?.getItem("auth")).email ===
+        "telloyaman@gmail.com" && (
+        <Link
+          className="mr-10 border-b-2 border-slate-100 hover:border-b-2 hover:border-violet-400 hover:text-violet-400"
+          to="/yaman_project/invoices"
+        >
+          Invoices
+        </Link>
+      )}
       <button
         className="mr-10 ml-auto hover:text-amber-400"
         onClick={toggleNavbar}
