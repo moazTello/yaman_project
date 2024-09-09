@@ -68,6 +68,14 @@ const ManageItem = () => {
         alert(`${item.itemName} Price Updated successfully`);
         setUpdateBox(null);
       } else if (updateItemPrice === null && updateItemAmount !== null) {
+        if (
+          updateItemAmount < 0 &&
+          JSON.parse(localStorage?.getItem("auth")).email !==
+            "telloyaman@gmail.com"
+        ) {
+          setLoading(false);
+          return alert("Not allowed nigative amount");
+        }
         // eslint-disable-next-line no-restricted-globals
         var resultAmount = confirm(
           "You are about leave the old Price, Does it suitable ?"
@@ -85,7 +93,7 @@ const ManageItem = () => {
       } else if (updateItemPrice === null && updateItemAmount === null) {
         setLoading(false);
         return alert("Please insert price or amount to complete the procces.");
-      } else {
+      } else if (updateItemAmount > 0 && updateItemPrice > 0) {
         await updateDoc(itemUpdated, {
           itemAmount: updateItemAmount + item.itemAmount,
           itemPrice: updateItemPrice,
