@@ -4,6 +4,7 @@ import { FaPaintBrush } from "react-icons/fa";
 import moment from "moment";
 import "../style/style.css";
 import { useNavigate } from "react-router-dom";
+import SwainIcon from "../assets/swain_profile.jpg";
 const Invoices = () => {
   const navigate = useNavigate();
   const {
@@ -148,16 +149,15 @@ const Invoices = () => {
               )}
             </div>
           ))}
-
           <div className="w-full flex justify-center mt-10">
-            <div class="stats shadow">
-              <div class="stat">
-                <div class="stat-figure text-secondary">
+            <div className="stats shadow">
+              <div className="stat">
+                <div className="stat-figure text-secondary">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    class="inline-block h-8 w-8 stroke-current"
+                    className="inline-block h-8 w-8 stroke-current"
                   >
                     <path
                       stroke-linecap="round"
@@ -167,20 +167,20 @@ const Invoices = () => {
                     ></path>
                   </svg>
                 </div>
-                <div class="stat-title">Items</div>
-                <div class="stat-value">{items.length}</div>
-                <div class="stat-desc">
+                <div className="stat-title">Items</div>
+                <div className="stat-value">{items.length}</div>
+                <div className="stat-desc">
                   Your Budget {totalbudget.toFixed(2)} $
                 </div>
               </div>
 
-              <div class="stat">
-                <div class="stat-figure text-secondary">
+              <div className="stat">
+                <div className="stat-figure text-secondary">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    class="inline-block h-8 w-8 stroke-current"
+                    className="inline-block h-8 w-8 stroke-current"
                   >
                     <path
                       stroke-linecap="round"
@@ -190,18 +190,20 @@ const Invoices = () => {
                     ></path>
                   </svg>
                 </div>
-                <div class="stat-title">Invoices</div>
-                <div class="stat-value">{invoices.length}</div>
-                <div class="stat-desc">Total {totalPriceEver.toFixed(2)} $</div>
+                <div className="stat-title">Invoices</div>
+                <div className="stat-value">{invoices.length}</div>
+                <div className="stat-desc">
+                  Total {totalPriceEver.toFixed(2)} $
+                </div>
               </div>
 
-              <div class="stat">
-                <div class="stat-figure text-secondary">
+              <div className="stat">
+                {/* <div className="stat-figure text-secondary">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
-                    class="inline-block h-8 w-8 stroke-current"
+                    className="inline-block h-8 w-8 stroke-current"
                   >
                     <path
                       stroke-linecap="round"
@@ -210,10 +212,15 @@ const Invoices = () => {
                       d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
                     ></path>
                   </svg>
+                </div> */}
+                <div className="stat-figure avatar">
+                  <div className="mask mask-squircle h-12 w-12">
+                    <img src={SwainIcon} alt="" />
+                  </div>
                 </div>
-                <div class="stat-title">Sellers</div>
-                <div class="stat-value">1</div>
-                <div class="stat-desc">telloyaman@gmail.com</div>
+                <div className="stat-title">Sellers</div>
+                <div className="stat-value">1</div>
+                <div className="stat-desc">telloyaman@gmail.com</div>
               </div>
             </div>
           </div>
