@@ -58,7 +58,7 @@ const Amount = () => {
   return (
     <div className="w-full min-h-20 flex flex-col items-center bg-base-200 md:flex-row fixed bottom-0 py-5">
       <p className="text-slate-100 text-lg ml-5 mt-3 md:mt-0 font-medium">
-        Total : {price} $
+        Total : {price.toFixed(3)} $
       </p>
       {!loading && soldItems.length > 0 && (
         // <div className="flex md:ml-12 overflow-scroll max-w-[100%] mt-3 md:mt-0 md:max-w-[60%] border-2 rounded-md border-slate-100 py-5">

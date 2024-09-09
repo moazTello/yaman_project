@@ -104,7 +104,7 @@ const Invoices = () => {
                           : "-"}
                       </td>
                       <td>{invoice.invoiceItems?.length}</td>
-                      <td>{invoice.invoicePrice}$</td>
+                      <td>{invoice?.invoicePrice?.toFixed(2)}$</td>
                     </tr>
                   ))}
                 </tbody>
@@ -138,7 +138,7 @@ const Invoices = () => {
 
                   <div className="w-full flex items-center justify-between">
                     <p>Price : </p>
-                    <p>{invoice.invoicePrice}$</p>
+                    <p>{invoice?.invoicePrice?.toFixed(2)}$</p>
                   </div>
                   <div className="w-full flex items-center justify-between">
                     <p>Seller : </p>
