@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useStore } from "../context/useStore";
 import { FaTrashCan } from "react-icons/fa6";
 import { IoFastFoodOutline, IoCloseSharp } from "react-icons/io5";
@@ -21,8 +21,8 @@ const ManageItem = () => {
     tableColor,
   } = useStore();
   const [updateBox, setUpdateBox] = useState(null);
-  const [updateItemAmount, setUpdateItemAmount] = useState(null);
-  const [updateItemPrice, setUpdateItemPrice] = useState(null);
+  const [updateItemAmount, setUpdateItemAmount] = useState(0);
+  const [updateItemPrice, setUpdateItemPrice] = useState(0);
   const {
     items,
     // , setItems, rowItemsCollection
@@ -53,7 +53,7 @@ const ManageItem = () => {
     if (!result) return;
     try {
       const itemUpdated = doc(db, "rowItems", item.id);
-      if (updateItemAmount === null && updateItemPrice !== null) {
+      if (updateItemAmount === 0 && updateItemPrice !== 0) {
         // eslint-disable-next-line no-restricted-globals
         var resultPrice = confirm(
           "You are about change just the price, Does it real ?"
@@ -62,12 +62,12 @@ const ManageItem = () => {
         await updateDoc(itemUpdated, {
           itemPrice: updateItemPrice,
         });
-        setUpdateItemAmount(null);
-        setUpdateItemPrice(null);
+        setUpdateItemAmount(0);
+        setUpdateItemPrice(0);
         await getItemsList();
         alert(`${item.itemName} Price Updated successfully`);
         setUpdateBox(null);
-      } else if (updateItemPrice === null && updateItemAmount !== null) {
+      } else if (updateItemPrice === 0 && updateItemAmount !== 0) {
         if (
           updateItemAmount < 0 &&
           JSON.parse(localStorage?.getItem("auth")).email !==
@@ -90,12 +90,12 @@ const ManageItem = () => {
             (await updateDoc(itemUpdated, {
               itemAmount: updateItemAmount + item.itemAmount,
             }));
-        setUpdateItemAmount(null);
-        setUpdateItemPrice(null);
+        setUpdateItemAmount(0);
+        setUpdateItemPrice(0);
         await getItemsList();
         alert(`${item.itemName} Charged successfully`);
         setUpdateBox(null);
-      } else if (updateItemPrice === null && updateItemAmount === null) {
+      } else if (updateItemPrice === 0 && updateItemAmount === 0) {
         setLoading(false);
         return alert("Please insert price or amount to complete the procces.");
       } else if (updateItemAmount > 0 && updateItemPrice > 0) {
@@ -104,8 +104,8 @@ const ManageItem = () => {
           itemPrice: updateItemPrice,
           chargeDate: new Date(),
         });
-        setUpdateItemAmount(null);
-        setUpdateItemPrice(null);
+        setUpdateItemAmount(0);
+        setUpdateItemPrice(0);
         await getItemsList();
         alert(`${item.itemName} Charged successfully`);
         setUpdateBox(null);
@@ -116,6 +116,31 @@ const ManageItem = () => {
       alert(error);
     }
   };
+  const inputs = useMemo(() => {
+    return (
+      <>
+        <input
+          type="number"
+          className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mt-10 mb-5 border-slate-200 px-3"
+          placeholder="Item Amount"
+          onChange={(e) => setUpdateItemAmount(Number(e.target.value))}
+          value={updateItemAmount}
+        />
+        <input
+          type="number"
+          className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] my-5 border-slate-200 px-3"
+          placeholder="Item Price"
+          onChange={(e) => setUpdateItemPrice(Number(e.target.value))}
+          value={updateItemPrice}
+        />
+      </>
+    );
+  }, [
+    setUpdateItemPrice,
+    setUpdateItemAmount,
+    updateItemPrice,
+    updateItemAmount,
+  ]);
   return (
     <div
       className={`${
@@ -379,7 +404,8 @@ const ManageItem = () => {
                     <IoCloseSharp size={30} />
                   </button>
                 </div>
-                <input
+                {inputs}
+                {/* <input
                   type="number"
                   className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mt-10 mb-5 border-slate-200 px-3"
                   placeholder="Item Amount"
@@ -390,7 +416,7 @@ const ManageItem = () => {
                   className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] my-5 border-slate-200 px-3"
                   placeholder="Item Price"
                   onChange={(e) => setUpdateItemPrice(Number(e.target.value))}
-                />
+                /> */}
                 <button
                   onClick={() => handleUpdate(item)}
                   className="w-96 text-xl border-2 border-white hover:border-red-500 rounded-lg my-5 hover:bg-red-500 bg-opacity-50 hover:text-white min-h-[40px] "
