@@ -119,16 +119,18 @@ const ManageItem = () => {
   const inputs = useMemo(() => {
     return (
       <>
+        <p className="mt-10 mb-1">Amount</p>
         <input
           type="number"
-          className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mt-10 mb-5 border-slate-200 px-3"
+          className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mb-5 border-slate-200 px-3"
           placeholder="Item Amount"
           onChange={(e) => setUpdateItemAmount(Number(e.target.value))}
           value={updateItemAmount}
         />
+        <p className="mt-3 mb-1">Price</p>
         <input
           type="number"
-          className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] my-5 border-slate-200 px-3"
+          className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mb-5 border-slate-200 px-3"
           placeholder="Item Price"
           onChange={(e) => setUpdateItemPrice(Number(e.target.value))}
           value={updateItemPrice}

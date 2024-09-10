@@ -27,3 +27,4 @@ export const db = getFirestore(app);
 //   appId: import.meta.env.VITE_APP_ID,
 //   measurementId: import.meta.env.VITE_MEASUREMENT_ID,
 // };
+// process.env.REACT_APP_NOT_SECRET_CODE

@@ -70,6 +70,7 @@ export const UseStoreProvider = ({ children }) => {
         ...doc.data(),
         id: doc.id,
       }));
+      console.log(data);
       if (data) {
         const dataDTO = data?.map((info) => {
           info.createdAt = info?.createdDate
@@ -77,9 +78,9 @@ export const UseStoreProvider = ({ children }) => {
                 info?.createdDate?.nanoseconds * 10 ** -9) *
               1000
             : null;
-          info.endededAt = info?.enddDate
-            ? (info?.enddDate?.seconds +
-                info?.endDate?.nanoseconds * 10 ** -9) *
+          info.endedAt = info?.endedDate
+            ? (info?.endedDate?.seconds +
+                info?.endedDate?.nanoseconds * 10 ** -9) *
               1000
             : null;
           info.chargedAt = info?.chargeDate

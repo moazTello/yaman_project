@@ -3,6 +3,7 @@ import { useStore } from "../context/useStore";
 import { FaPaintBrush } from "react-icons/fa";
 import { addDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
+import axios from "axios";
 const Amount = () => {
   const {
     price,
@@ -18,7 +19,6 @@ const Amount = () => {
   } = useStore();
   const [loading, setLoading] = useState(false);
   const handleClear = () => {
-    console.log(soldItems);
     setSoldItem([]);
     setPrice(0);
   };
@@ -33,9 +33,14 @@ const Amount = () => {
     try {
       soldItems.map(async (item) => {
         const itemUpdated = doc(db, "rowItems", item?.item?.id);
-        await updateDoc(itemUpdated, {
-          itemAmount: item?.item?.itemAmount - item.localAmount,
-        });
+        item?.item?.itemAmount - item.localAmount === 0
+          ? await updateDoc(itemUpdated, {
+              itemAmount: item?.item?.itemAmount - item.localAmount,
+              endedDate: new Date(),
+            })
+          : await updateDoc(itemUpdated, {
+              itemAmount: item?.item?.itemAmount - item.localAmount,
+            });
       });
       await addDoc(invoicesCollection, {
         invoiceSeller: JSON.parse(localStorage?.getItem("auth")).email,
@@ -46,6 +51,36 @@ const Amount = () => {
       });
       await getItemsList();
       await getInvoicesList();
+
+      let telegramItems = [];
+      soldItems?.map(
+        (soldItem) =>
+          (telegramItems += `${
+            soldItem?.item?.itemAmount - soldItem.localAmount === 0
+              ? "🚚"
+              : "      "
+          }   Name : ${soldItem.item.itemName} , Amount : ${
+            soldItem.localAmount
+          } , Price : ${soldItem.item.itemPrice}$\n${
+            soldItem?.item?.itemAmount - soldItem.localAmount === 0
+              ? `          ❌${soldItem?.item?.itemName} is empty now \n`
+              : ""
+          } `)
+      );
+      await axios.post(
+        `https://api.telegram.org/bot7499357866:AAGwYJG2UZGxZKp6RDo9aeR5SNKqP1PNJpA/sendMessage`,
+        {
+          chat_id: 1018056393,
+          text: `Seller : ${
+            JSON.parse(localStorage?.getItem("auth")).email
+          } \nInvoice Number : ${
+            invoices?.length + 1
+          } \nPrice : ${price.toFixed(
+            3
+          )} $ \nSold Items : \n {\n ${telegramItems} }`,
+        }
+      );
+
       alert(`Items Sold successfully`);
       setSoldItem([]);
       setPrice(0);
@@ -167,3 +202,6 @@ const Amount = () => {
 };
 
 export default Amount;
+
+// get telegram chat id
+// https://api.telegram.org/bot7499357866:AAGwYJG2UZGxZKp6RDo9aeR5SNKqP1PNJpA/getUpdates
