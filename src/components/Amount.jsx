@@ -80,6 +80,19 @@ const Amount = () => {
           )} $ \nSold Items : \n {\n ${telegramItems} }`,
         }
       );
+      await axios.post(
+        `https://api.telegram.org/bot7499357866:AAGwYJG2UZGxZKp6RDo9aeR5SNKqP1PNJpA/sendMessage`,
+        {
+          chat_id: 969682407,
+          text: `Seller : ${
+            JSON.parse(localStorage?.getItem("auth")).email
+          } \nInvoice Number : ${
+            invoices?.length + 1
+          } \nPrice : ${price.toFixed(
+            3
+          )} $ \nSold Items : \n {\n ${telegramItems} }`,
+        }
+      );
 
       alert(`Items Sold successfully`);
       setSoldItem([]);
