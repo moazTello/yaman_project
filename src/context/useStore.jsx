@@ -12,6 +12,8 @@ export const UseStoreProvider = ({ children }) => {
   const [purchaseList, setPurchaseList] = useState([]);
   const [items, setItems] = useState([]);
   const [invoices, setInvoices] = useState([]);
+  const [BoxOfficeList, setBoxOfficeList] = useState([]);
+  const [BenefitsList, setBenefitsList] = useState([]);
   const [backgroundImage, setBackgroundImage] = useState(
     JSON.parse(localStorage.getItem("background_image")) || false
   );
@@ -57,10 +59,16 @@ export const UseStoreProvider = ({ children }) => {
   );
   const [soldItems, setSoldItem] = useState([]);
   const rowItemsCollection = collection(db, "rowItems");
+  const BoxCollection = collection(db, "Box");
+  const BenefitCollection = collection(db, "Benefits");
+  const BenefitCollection_get = query(
+    collection(db, "Benefits"),
+    orderBy("numberBenefit", "desc")
+  );
   const invoicesCollection = collection(db, "invoices");
   const invoicesCollection_get = query(
     collection(db, "invoices"),
-    orderBy("numberInvoice", "asc")
+    orderBy("numberInvoice", "desc")
   );
 
   const getItemsList = async () => {
@@ -70,7 +78,6 @@ export const UseStoreProvider = ({ children }) => {
         ...doc.data(),
         id: doc.id,
       }));
-      console.log(data);
       if (data) {
         const dataDTO = data?.map((info) => {
           info.createdAt = info?.createdDate
@@ -91,6 +98,29 @@ export const UseStoreProvider = ({ children }) => {
           return info;
         });
         setItems(dataDTO);
+      }
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
+  };
+  const getBoxOffice = async () => {
+    try {
+      const response = await getDocs(BoxCollection);
+      const data = response?.docs?.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      if (data) {
+        const dataDTO = data?.map((info) => {
+          info.chargedAt = info?.chargeDate
+            ? (info?.chargeDate?.seconds +
+                info?.chargeDate?.nanoseconds * 10 ** -9) *
+              1000
+            : null;
+          return info;
+        });
+        setBoxOfficeList(dataDTO);
       }
     } catch (error) {
       console.log(error);
@@ -123,9 +153,37 @@ export const UseStoreProvider = ({ children }) => {
       alert(error);
     }
   };
+  const getBenefitsList = async () => {
+    try {
+      const response = await getDocs(
+        BenefitCollection_get,
+        orderBy("numberBenefit")
+      );
+      const data = response?.docs?.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      if (data) {
+        const dataDTO = data?.map((info) => {
+          info.createdAt = info?.benefitDate
+            ? (info?.benefitDate?.seconds +
+                info?.benefitDate?.nanoseconds * 10 ** -9) *
+              1000
+            : null;
+          return info;
+        });
+        setBenefitsList(dataDTO);
+      }
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
+  };
   useEffect(() => {
     logedin && getItemsList();
     logedin && getInvoicesList();
+    logedin && getBoxOffice();
+    logedin && getBenefitsList();
     // eslint-disable-next-line
   }, [logedin]);
   return (
@@ -154,6 +212,12 @@ export const UseStoreProvider = ({ children }) => {
         invoicesCollection,
         invoices,
         getInvoicesList,
+        BoxCollection,
+        getBoxOffice,
+        BoxOfficeList,
+        BenefitCollection,
+        BenefitsList,
+        getBenefitsList,
       }}
     >
       {children}

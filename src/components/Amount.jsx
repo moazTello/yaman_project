@@ -3,6 +3,7 @@ import { useStore } from "../context/useStore";
 import { FaPaintBrush } from "react-icons/fa";
 import { addDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
+import moment from "moment";
 import axios from "axios";
 const Amount = () => {
   const {
@@ -16,6 +17,11 @@ const Amount = () => {
     invoicesCollection,
     invoices,
     getInvoicesList,
+    getBoxOffice,
+    BoxOfficeList,
+    BenefitCollection,
+    BenefitsList,
+    getBenefitsList,
   } = useStore();
   const [loading, setLoading] = useState(false);
   const handleClear = () => {
@@ -42,6 +48,7 @@ const Amount = () => {
               itemAmount: item?.item?.itemAmount - item.localAmount,
             });
       });
+
       await addDoc(invoicesCollection, {
         invoiceSeller: JSON.parse(localStorage?.getItem("auth")).email,
         numberInvoice: invoices?.length + 1,
@@ -49,24 +56,67 @@ const Amount = () => {
         invoiceDate: new Date(),
         invoiceItems: soldItems,
       });
+      const boxUpdated = doc(db, "Box", BoxOfficeList[0]?.id);
+      await updateDoc(boxUpdated, {
+        totalMoney: BoxOfficeList[0]?.totalMoney + price,
+      });
+      await getBoxOffice();
       await getItemsList();
       await getInvoicesList();
-
+      let Benefit = 0;
       let telegramItems = [];
-      soldItems?.map(
-        (soldItem) =>
-          (telegramItems += `${
-            soldItem?.item?.itemAmount - soldItem.localAmount === 0
-              ? "🚚"
-              : "      "
-          }   Name : ${soldItem.item.itemName} , Amount : ${
-            soldItem.localAmount
-          } , Price : ${soldItem.item.itemPrice}$\n${
-            soldItem?.item?.itemAmount - soldItem.localAmount === 0
-              ? `          ❌${soldItem?.item?.itemName} is empty now \n`
-              : ""
-          } `)
-      );
+      soldItems?.map((soldItem) => {
+        telegramItems += `${
+          soldItem?.item?.itemAmount - soldItem.localAmount === 0
+            ? "🚚"
+            : "      "
+        }   Name : ${soldItem.item.itemName} , Amount : ${
+          soldItem.localAmount
+        } , Benefit Price : ${soldItem.item.itemPrice} IQD , Row Price : ${
+          soldItem.item.itemPriceBenefitless
+        } IQD \n${
+          soldItem?.item?.itemAmount - soldItem.localAmount === 0
+            ? `          ❌${soldItem?.item?.itemName} is empty now \n`
+            : ""
+        } `;
+        Benefit +=
+          soldItem.localAmount *
+          (soldItem.item.itemPrice - soldItem.item.itemPriceBenefitless);
+        return telegramItems;
+      });
+      const benefitUpdated = BenefitsList[0]?.id
+        ? doc(db, "Benefits", BenefitsList[0]?.id)
+        : "";
+
+      const Ben = BenefitsList[0]?.benefitAmount
+        ? BenefitsList[0].benefitAmount + Benefit
+        : Benefit;
+
+      if (
+        !(
+          new Date().getMonth() + 1 ===
+          parseInt(moment(BenefitsList[0]?.createdAt).format("MM"), 10)
+        )
+      ) {
+        await addDoc(BenefitCollection, {
+          numberBenefit: BenefitsList?.length ? BenefitsList.length + 1 : 1,
+          benefitDate: new Date(),
+          benefitAmount: Benefit,
+        });
+      } else {
+        if (BenefitsList.length > 0) {
+          updateDoc(benefitUpdated, {
+            benefitAmount: Ben,
+          });
+        } else {
+          await addDoc(BenefitCollection, {
+            numberBenefit: BenefitsList?.length ? BenefitsList.length + 1 : 1,
+            benefitDate: new Date(),
+            benefitAmount: Benefit,
+          });
+        }
+      }
+      await getBenefitsList();
       await axios.post(
         `https://api.telegram.org/bot7499357866:AAGwYJG2UZGxZKp6RDo9aeR5SNKqP1PNJpA/sendMessage`,
         {
@@ -77,7 +127,7 @@ const Amount = () => {
             invoices?.length + 1
           } \nPrice : ${price.toFixed(
             3
-          )} $ \nSold Items : \n {\n ${telegramItems} }`,
+          )} IQD \nSold Items : \n {\n ${telegramItems} }\nInvoice Benefit : ${Benefit} IQD`,
         }
       );
       await axios.post(
@@ -90,7 +140,7 @@ const Amount = () => {
             invoices?.length + 1
           } \nPrice : ${price.toFixed(
             3
-          )} $ \nSold Items : \n {\n ${telegramItems} }`,
+          )} IQD \nSold Items : \n {\n ${telegramItems} }\nInvoice Benefit : ${Benefit} IQD`,
         }
       );
 
@@ -99,14 +149,15 @@ const Amount = () => {
       setPrice(0);
       setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log(error);
       alert(error);
     }
   };
   return (
-    <div className="w-full min-h-20 flex flex-col items-center bg-base-200 md:flex-row fixed bottom-0 py-5">
+    <div className="w-full min-h-20 flex flex-col items-center bg-stone-900 md:flex-row py-5">
       <p className="text-slate-100 text-lg ml-5 mt-3 md:mt-0 font-medium">
-        Total : {price.toFixed(3)} $
+        Total : {price.toFixed(3)} IQD
       </p>
       {!loading && soldItems.length > 0 && (
         // <div className="flex md:ml-12 overflow-scroll max-w-[100%] mt-3 md:mt-0 md:max-w-[60%] border-2 rounded-md border-slate-100 py-5">
@@ -116,14 +167,14 @@ const Amount = () => {
         //     </p>
         //   ))}
         // </div>
-        <div className="overflow-auto mx-auto rounded-lg w-[65%] max-h-52">
+        <div className="overflow-auto mx-auto rounded-lg w-[95%] mt-5 md:mt-0 md:w-[65%] max-h-52">
           <table className="table">
             <thead>
               <tr
                 className={`${
                   tableColor
-                    ? "bg-base-200 text-white"
-                    : "text-base-200 bg-slate-100"
+                    ? "bg-stone-900 text-white"
+                    : "text-stone-900 bg-slate-100"
                 } `}
               >
                 <th>
@@ -142,8 +193,8 @@ const Amount = () => {
                   key={index}
                   className={`${
                     tableColor
-                      ? "table_row w-full hover:bg-base-200"
-                      : "w-full hover:bg-slate-300 bg-slate-200 text-base-200"
+                      ? "table_row w-full hover:bg-stone-900"
+                      : "w-full hover:bg-slate-300 bg-slate-200 text-stone-900"
                   } `}
                 >
                   <th>{index + 1}</th>
@@ -158,13 +209,14 @@ const Amount = () => {
       )}
       <button
         onClick={handleClear}
-        className="w-20 min-h-10 bg-slate-100 text-amber-400 rounded-md md:ml-auto my-3 md:my-0 mr-3 hover:text-slate-100 hover:bg-amber-400 hover:border-2 hover:border-slate-100"
+        disabled={loading}
+        className="w-20 min-h-10 bg-slate-100 text-stone-700 rounded-md md:ml-auto my-3 md:my-0 mr-3 hover:text-slate-100 hover:bg-amber-400 hover:border-2 hover:border-slate-100"
       >
         {loading ? (
           <div className="flex justify-center" role="status">
             <svg
               aria-hidden="true"
-              className="w-5 h-5 text-gray-200 animate-spin dark:text-gray-600 fill-slate-100"
+              className="w-5 h-5 text-stone-200 animate-spin dark:text-stone-600 fill-slate-100"
               viewBox="0 0 100 101"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -185,13 +237,14 @@ const Amount = () => {
       </button>
       <button
         onClick={sellItems}
-        className="w-20 min-h-10 bg-slate-100 text-amber-400 rounded-md mr-3 my-3 md:my-0 hover:text-slate-100 hover:bg-amber-400 hover:border-2 hover:border-slate-100"
+        disabled={loading}
+        className="w-20 min-h-10 bg-slate-100 text-stone-700 rounded-md mr-3 my-3 md:my-0 hover:text-slate-100 hover:bg-amber-400 hover:border-2 hover:border-slate-100"
       >
         {loading ? (
           <div className="flex justify-center" role="status">
             <svg
               aria-hidden="true"
-              className="w-5 h-5 text-gray-200 animate-spin dark:text-gray-600 fill-slate-100"
+              className="w-5 h-5 text-stone-200 animate-spin dark:text-stone-600 fill-slate-100"
               viewBox="0 0 100 101"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"

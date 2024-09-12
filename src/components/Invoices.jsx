@@ -42,13 +42,13 @@ const Invoices = () => {
     >
       {JSON.parse(localStorage?.getItem("auth")).email ===
         "telloyaman@gmail.com" && (
-        <div className="items_shadow w-full min-h-[100vh] max-h-[100vh] p-10 overflow-y-scroll">
+        <div className="items_shadow w-full min-h-[100vh] max-h-[100vh] p-2 md:p-10 overflow-y-scroll">
           <div className="w-full flex items-center justify-end mb-3">
             <button
               onClick={toggleBoxesView}
               className="min-w-20 min-h-20 m-2 flex justify-center items-center"
             >
-              <p className="w-16 h-16 text-slate-50 hover:text-violet-400 hover:bg-slate-900 hover:border-violet-400 border-2 border-slate-50 rounded-lg bg-base-200 flex justify-center items-center text-2xl">
+              <p className="w-16 h-16 text-slate-50 hover:text-violet-400 hover:bg-slate-900 hover:border-violet-400 border-2 border-slate-50 rounded-lg bg-stone-900 flex justify-center items-center text-2xl">
                 <span className="text-sm mr-1">
                   {boxesView ? "Boxes" : "Table"}
                 </span>
@@ -62,8 +62,8 @@ const Invoices = () => {
                   <tr
                     className={`${
                       tableColor
-                        ? "bg-base-200 text-white"
-                        : "text-base-200 bg-slate-100"
+                        ? "bg-stone-900 text-white"
+                        : "text-stone-900 bg-slate-100"
                     } `}
                   >
                     <th>
@@ -85,8 +85,8 @@ const Invoices = () => {
                       key={index}
                       className={`${
                         tableColor
-                          ? "table_row w-full hover:bg-base-200"
-                          : "w-full hover:bg-slate-300 bg-slate-200 text-base-200"
+                          ? "table_row w-full hover:bg-stone-900"
+                          : "w-full hover:bg-slate-300 bg-slate-200 text-stone-900"
                       } `}
                     >
                       <th>{index + 1}</th>
@@ -105,7 +105,7 @@ const Invoices = () => {
                           : "-"}
                       </td>
                       <td>{invoice.invoiceItems?.length}</td>
-                      <td>{invoice?.invoicePrice?.toFixed(2)}$</td>
+                      <td>{invoice?.invoicePrice?.toFixed(2)} IQD </td>
                     </tr>
                   ))}
                 </tbody>
@@ -139,7 +139,7 @@ const Invoices = () => {
 
                   <div className="w-full flex items-center justify-between">
                     <p>Price : </p>
-                    <p>{invoice?.invoicePrice?.toFixed(2)}$</p>
+                    <p>{invoice?.invoicePrice?.toFixed(2)} IQD</p>
                   </div>
                   <div className="w-full flex items-center justify-between">
                     <p>Seller : </p>
@@ -150,7 +150,7 @@ const Invoices = () => {
             </div>
           ))}
           <div className="w-full flex justify-center mt-10">
-            <div className="stats shadow">
+            <div className="stats shadow flex flex-col md:flex-row bg-stone-900 text-white">
               <div className="stat">
                 <div className="stat-figure text-secondary">
                   <svg
@@ -170,7 +170,7 @@ const Invoices = () => {
                 <div className="stat-title">Items</div>
                 <div className="stat-value">{items.length}</div>
                 <div className="stat-desc">
-                  Your Budget {totalbudget.toFixed(2)} $
+                  Your Budget {totalbudget.toFixed(2)} IQD
                 </div>
               </div>
 
@@ -193,7 +193,7 @@ const Invoices = () => {
                 <div className="stat-title">Invoices</div>
                 <div className="stat-value">{invoices.length}</div>
                 <div className="stat-desc">
-                  Total {totalPriceEver.toFixed(2)} $
+                  Total {totalPriceEver.toFixed(2)} IQD
                 </div>
               </div>
 

@@ -6,6 +6,7 @@ import ManageItem from "./components/ManageItem";
 import Login from "./components/Login";
 import AddItems from "./components/AddItems";
 import Invoices from "./components/Invoices";
+import BoxOffice from "./components/BoxOffice";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         </Route>
         <Route path="/yaman_project/addItem" element={<AddItems />} />
         <Route path="/yaman_project/invoices" element={<Invoices />} />
+        <Route path="/yaman_project/boxoffice" element={<BoxOffice />} />
       </Route>
     </Routes>
   );

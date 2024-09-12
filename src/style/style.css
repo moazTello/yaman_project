@@ -16,6 +16,12 @@
   background-repeat: no-repeat;
   background-position: center;
 }
+.addItemDarius {
+  background: url("../assets/Darius.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
 .tableBackground {
   background: url("../assets/table.jpeg");
   background-size: cover;

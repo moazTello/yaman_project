@@ -48,30 +48,28 @@ const Items = () => {
       <div
         className={`${
           backgroundImage ? "items" : "tableBackground"
-        }  w-full mb-20 flex justify-center items-start min-h-[100vh]`}
+        }  w-full flex justify-center items-start md:min-h-[80vh]`}
       >
-        <div className="items_shadow w-full min-h-[100vh] p-10">
+        <div className="items_shadow w-full md:min-h-[80vh] p-2 md:p-10">
           <div className="w-full flex items-center justify-end mb-3">
             <button
               onClick={toggleBoxesView}
               className="min-w-20 min-h-20 m-2 flex justify-center items-center"
             >
-              <p className="w-16 h-16 text-slate-50 hover:text-amber-400 hover:bg-slate-900 hover:border-amber-400 border-2 border-slate-50 rounded-lg bg-base-200 flex justify-center items-center text-2xl">
-                <span className="text-sm mr-1">
-                  {boxesView ? "Boxes" : "Table"}
-                </span>
+              <p className="w-16 h-16 text-slate-50 hover:text-amber-400 text-sm bg-stone-900 hover:border-amber-400 border-2 border-slate-50 rounded-lg flex justify-center items-center">
+                {boxesView ? "Boxes" : "Table"}
               </p>
             </button>
           </div>
           {boxesView && (
-            <div className="overflow-x-auto rounded-lg">
+            <div className="overflow-x-auto max-h-[50vh] md:max-h-[50vh] rounded-lg">
               <table className="table">
                 <thead>
                   <tr
                     className={`${
                       tableColor
-                        ? "bg-base-200 text-white"
-                        : "text-base-200 bg-slate-100"
+                        ? "bg-stone-900 text-white"
+                        : "text-stone-900 bg-slate-100"
                     } `}
                   >
                     <th>
@@ -81,7 +79,7 @@ const Items = () => {
                     </th>
                     <th>Name</th>
                     <th>Amount</th>
-                    <th>Available</th>
+                    <th className="hidden md:block">Available</th>
                     <th>Price</th>
                     <th>Purchase</th>
                   </tr>
@@ -91,8 +89,8 @@ const Items = () => {
                     <tr
                       className={`${
                         tableColor
-                          ? "table_row w-full hover:bg-base-200"
-                          : "w-full hover:bg-base-200 bg-slate-200 text-base-200"
+                          ? "table_row w-full hover:bg-stone-900"
+                          : "w-full hover:bg-stone-900 bg-slate-200 text-stone-900"
                       } `}
                     >
                       <td colSpan="10">
@@ -102,7 +100,7 @@ const Items = () => {
                         >
                           <svg
                             aria-hidden="true"
-                            className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-amber-400"
+                            className="w-8 h-8 text-stone-200 animate-spin dark:text-stone-600 fill-amber-400"
                             viewBox="0 0 100 101"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -125,14 +123,14 @@ const Items = () => {
                       key={index}
                       className={`${
                         tableColor
-                          ? "table_row w-full hover:bg-base-200"
-                          : "w-full hover:bg-slate-300 bg-slate-200 text-base-200"
+                          ? "table_row text-stone-200 w-full hover:bg-stone-900"
+                          : "w-full hover:bg-slate-300 bg-slate-200 text-stone-900"
                       } `}
                     >
                       <th>{index + 1}</th>
                       <td>{item.itemName} </td>
                       <td>{item.itemAmount}</td>
-                      <td>
+                      <td className="hidden md:block">
                         {item.itemAmount > 0 ? (
                           <FaCircleCheck
                             size={22}
@@ -145,7 +143,7 @@ const Items = () => {
                           />
                         )}
                       </td>
-                      <td>{item.itemPrice}$</td>
+                      <td>{item.itemPrice} IQD </td>
                       <td>
                         <button
                           onClick={() => clickHandler(item)}
@@ -165,7 +163,7 @@ const Items = () => {
             <div className="flex justify-center my-3 w-full" role="status">
               <svg
                 aria-hidden="true"
-                className="w-16 h-16 text-gray-200 animate-spin dark:text-gray-600 fill-amber-400"
+                className="w-16 h-16 text-stone-200 animate-spin dark:text-stone-600 fill-amber-400"
                 viewBox="0 0 100 101"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -186,11 +184,11 @@ const Items = () => {
               <button
                 key={index}
                 onClick={() => clickHandler(item)}
-                className="min-w-44 float-left m-5 hover:bg-gray-800 hover:text-amber-400 hover:text-lg hover:font-bold text-white min-h-32 flex flex-col justify-center items-center border-2 border-amber-400 rounded-md"
+                className="min-w-20 md:min-w-44 px-2 md:px-0 float-left m-2 md:m-5 hover:bg-stone-800 hover:text-amber-400 md:hover:text-lg md:hover:font-bold text-white min-h-32 flex flex-col justify-center items-center border-2 border-amber-400 rounded-md"
               >
                 <p>{item.itemName}</p>
                 <p>{item.itemAmount}</p>
-                <p>{item.itemPrice}$</p>
+                <p>{item.itemPrice} IQD </p>
               </button>
             ))}
         </div>

@@ -1,16 +1,40 @@
 import React, { useState } from "react";
-import { addDoc } from "firebase/firestore";
+import { addDoc, doc, updateDoc } from "firebase/firestore";
+import { db } from "../config/firebase";
 import { useStore } from "../context/useStore";
 import "../style/style.css";
 import { Link, useNavigate } from "react-router-dom";
 const AddItems = () => {
   const navigate = useNavigate();
-  const { rowItemsCollection, backgroundImage, getItemsList } = useStore();
+  const {
+    rowItemsCollection,
+    backgroundImage,
+    getItemsList,
+    BoxOfficeList,
+    getBoxOffice,
+  } = useStore();
   const [itemName, setItemName] = useState("");
   const [itemAmount, setItemAmount] = useState(0);
   const [itemPrice, setItemPrice] = useState(0);
+  const [itemPriceBenefitless, setItemPriceBenefitless] = useState(0);
   const [loading, setLoding] = useState(false);
   const addItem = async () => {
+    if (itemPriceBenefitless * itemAmount > BoxOfficeList[0]?.totalMoney) {
+      return alert(
+        "Not Enough Money in the box, Charge the money box before add that amount of item"
+      );
+    }
+    if (itemPrice < itemPriceBenefitless) {
+      return alert("Row Price must be lower then Benefit Price !");
+    }
+    if (
+      itemPrice === 0 ||
+      itemPriceBenefitless === 0 ||
+      itemName === "" ||
+      itemAmount === 0
+    ) {
+      return alert("All fields are required !");
+    }
     setLoding(true);
     try {
       await addDoc(rowItemsCollection, {
@@ -18,10 +42,17 @@ const AddItems = () => {
         itemAvailable: itemAmount > 0 ? true : false,
         itemAmount: itemAmount,
         itemPrice: itemPrice,
+        itemPriceBenefitless: itemPriceBenefitless,
         createdDate: new Date(),
         endedDate: 0,
         chargeDate: new Date(),
       });
+      const boxUpdated = doc(db, "Box", BoxOfficeList[0]?.id);
+      await updateDoc(boxUpdated, {
+        totalMoney:
+          BoxOfficeList[0]?.totalMoney - itemPriceBenefitless * itemAmount,
+      });
+      await getBoxOffice();
       await getItemsList();
       alert("Item added successfuly !");
       setLoding(false);
@@ -38,36 +69,42 @@ const AddItems = () => {
         backgroundImage ? "addItemSwain" : "tableBackground"
       }  w-full flex justify-center items-start min-h-[100vh] max-h-[100vh]`}
     >
-      <div className="items_shadow flex flex-col w-full min-h-[100vh] max-h-[100vh] p-10 overflow-y-scroll">
+      <div className="items_shadow flex flex-col w-full min-h-[100vh] max-h-[100vh] p-5 md:p-10 overflow-y-scroll">
         <p className="w-full text-2xl text-white font-bold my-5 ">
           Add New Item
         </p>
         <p className="mt-2 mb-1">Item Name</p>
         <input
-          className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mb-5 border-slate-200 px-3"
+          className="w-72 md:w-96 bg-stone-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mb-5 border-slate-200 px-3"
           onChange={(e) => setItemName(e.target.value)}
         />
         <p className="mt-2 mb-1">Item Amount</p>
         <input
           type="number"
-          className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mb-5 border-slate-200 px-3"
+          className="w-72 md:w-96 bg-stone-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mb-5 border-slate-200 px-3"
           onChange={(e) => setItemAmount(Number(e.target.value))}
         />
-        <p className="mt-2 mb-1">Item Price</p>
+        <p className="mt-2 mb-1">Benefit Item Price</p>
         <input
           type="number"
-          className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mb-5 border-slate-200 px-3"
+          className="w-72 md:w-96 bg-stone-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mb-5 border-slate-200 px-3"
           onChange={(e) => setItemPrice(Number(e.target.value))}
+        />
+        <p className="mt-2 mb-1">Row Item Price</p>
+        <input
+          type="number"
+          className="w-72 md:w-96 bg-stone-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mb-5 border-slate-200 px-3"
+          onChange={(e) => setItemPriceBenefitless(Number(e.target.value))}
         />
         <button
           onClick={addItem}
-          className="w-96 text-xl border-2 justify-center items-center border-white hover:border-red-500 rounded-lg my-5 hover:bg-red-500 bg-opacity-50 hover:text-white min-h-[40px] "
+          className="w-72 md:w-96 text-xl border-2 justify-center items-center border-white hover:border-red-500 rounded-lg my-5 hover:bg-red-500 bg-opacity-50 hover:text-white min-h-[40px] "
         >
           {loading ? (
             <div className="flex justify-center my-3" role="status">
               <svg
                 aria-hidden="true"
-                className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-slate-100"
+                className="w-8 h-8 text-stone-200 animate-spin dark:text-stone-600 fill-slate-100"
                 viewBox="0 0 100 101"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +125,7 @@ const AddItems = () => {
         </button>
         <Link
           to="/yaman_project/manageItems"
-          className="w-96 flex justify-center items-center text-xl border-2 border-white hover:border-zinc-800 rounded-lg my-5 hover:bg-zinc-800 bg-opacity-50 hover:text-white min-h-[40px] "
+          className="w-72 md:w-96 flex justify-center items-center text-xl border-2 border-white hover:border-zinc-800 rounded-lg my-5 hover:bg-zinc-800 bg-opacity-50 hover:text-white min-h-[40px] "
         >
           Go Back
         </Link>

@@ -19,10 +19,13 @@ const ManageItem = () => {
     backgroundImage,
     toggleTableColor,
     tableColor,
+    BoxOfficeList,
+    getBoxOffice,
   } = useStore();
   const [updateBox, setUpdateBox] = useState(null);
   const [updateItemAmount, setUpdateItemAmount] = useState(0);
   const [updateItemPrice, setUpdateItemPrice] = useState(0);
+  const [updateRowItemPrice, setUpdateRowItemPrice] = useState(0);
   const {
     items,
     // , setItems, rowItemsCollection
@@ -47,27 +50,90 @@ const ManageItem = () => {
   };
 
   const handleUpdate = async (item) => {
-    setLoading(true);
     // eslint-disable-next-line no-restricted-globals
     var result = confirm("Make sure from the price & amount");
     if (!result) return;
+    setLoading(true);
     try {
       const itemUpdated = doc(db, "rowItems", item.id);
-      if (updateItemAmount === 0 && updateItemPrice !== 0) {
+      const boxUpdated = doc(db, "Box", BoxOfficeList[0]?.id);
+
+      if (
+        updateItemAmount === 0 &&
+        updateRowItemPrice === 0 &&
+        updateItemPrice !== 0
+      ) {
         // eslint-disable-next-line no-restricted-globals
-        var resultPrice = confirm(
+        let resultPrice = confirm(
           "You are about change just the price, Does it real ?"
         );
-        if (!resultPrice) return;
+        if (item.itemPriceBenefitless >= updateItemPrice) {
+          setLoading(false);
+          return alert(
+            "the benefit price is lower than the row price check your values please !"
+          );
+        }
+        if (!resultPrice) return setLoading(false);
         await updateDoc(itemUpdated, {
           itemPrice: updateItemPrice,
         });
         setUpdateItemAmount(0);
         setUpdateItemPrice(0);
+        setUpdateRowItemPrice(0);
         await getItemsList();
         alert(`${item.itemName} Price Updated successfully`);
         setUpdateBox(null);
-      } else if (updateItemPrice === 0 && updateItemAmount !== 0) {
+      } else if (
+        updateItemAmount === 0 &&
+        updateRowItemPrice !== 0 &&
+        updateItemPrice === 0
+      ) {
+        // eslint-disable-next-line no-restricted-globals
+        let resultPrice = confirm(
+          "You are about change just the row price, Does it real ?"
+        );
+        if (item.itemPrice <= updateRowItemPrice) {
+          setLoading(false);
+          return alert(
+            "the benefit price is lower than the row price check your values please !"
+          );
+        }
+        if (!resultPrice) return setLoading(false);
+        await updateDoc(itemUpdated, {
+          itemPriceBenefitless: updateRowItemPrice,
+        });
+        setUpdateItemAmount(0);
+        setUpdateItemPrice(0);
+        setUpdateRowItemPrice(0);
+        await getItemsList();
+        alert(`${item.itemName} Price Updated successfully`);
+        setUpdateBox(null);
+      } else if (
+        updateItemAmount === 0 &&
+        updateRowItemPrice !== 0 &&
+        updateItemPrice !== 0
+      ) {
+        if (updateItemPrice <= updateRowItemPrice) {
+          setLoading(false);
+          return alert(
+            "the benefit price is lower than the row price check your values please !"
+          );
+        }
+        await updateDoc(itemUpdated, {
+          itemPriceBenefitless: updateRowItemPrice,
+          itemPrice: updateItemPrice,
+        });
+        setUpdateItemAmount(0);
+        setUpdateItemPrice(0);
+        setUpdateRowItemPrice(0);
+        await getItemsList();
+        alert(`${item.itemName} Price Updated successfully`);
+        setUpdateBox(null);
+      } else if (
+        updateItemPrice === 0 &&
+        updateItemAmount !== 0 &&
+        updateRowItemPrice === 0
+      ) {
         if (
           updateItemAmount < 0 &&
           JSON.parse(localStorage?.getItem("auth")).email !==
@@ -76,11 +142,18 @@ const ManageItem = () => {
           setLoading(false);
           return alert("Not allowed nigative amount");
         }
+        if (
+          BoxOfficeList[0]?.totalMoney <
+          updateItemAmount * item.itemPriceBenefitless
+        ) {
+          setLoading(false);
+          return alert("Not Enough money in the box !");
+        }
         // eslint-disable-next-line no-restricted-globals
-        var resultAmount = confirm(
+        let resultAmount = confirm(
           "You are about leave the old Price, Does it suitable ?"
         );
-        if (!resultAmount) return;
+        if (!resultAmount) return setLoading(false);
         updateItemAmount > 0
           ? await updateDoc(itemUpdated, {
               itemAmount: updateItemAmount + item.itemAmount,
@@ -90,22 +163,62 @@ const ManageItem = () => {
             (await updateDoc(itemUpdated, {
               itemAmount: updateItemAmount + item.itemAmount,
             }));
+
+        updateItemAmount > 0 &&
+          (await updateDoc(boxUpdated, {
+            totalMoney:
+              BoxOfficeList[0]?.totalMoney -
+              updateItemAmount * item.itemPriceBenefitless,
+          }));
+        updateItemAmount > 0 && (await getBoxOffice());
+        await getItemsList();
         setUpdateItemAmount(0);
         setUpdateItemPrice(0);
-        await getItemsList();
+        setUpdateRowItemPrice(0);
         alert(`${item.itemName} Charged successfully`);
         setUpdateBox(null);
-      } else if (updateItemPrice === 0 && updateItemAmount === 0) {
+      } else if (
+        updateItemPrice === 0 &&
+        updateItemAmount === 0 &&
+        updateRowItemPrice === 0
+      ) {
         setLoading(false);
         return alert("Please insert price or amount to complete the procces.");
-      } else if (updateItemAmount > 0 && updateItemPrice > 0) {
+      } else if (
+        updateItemAmount > 0 &&
+        updateItemPrice > 0 &&
+        updateRowItemPrice > 0
+      ) {
+        if (
+          BoxOfficeList[0]?.totalMoney <
+          updateItemAmount * updateRowItemPrice
+        ) {
+          setLoading(false);
+          return alert("Not Enough money in the box !");
+        }
+        if (updateRowItemPrice >= updateItemPrice) {
+          setLoading(false);
+          return alert(
+            "the benefit price is lower than the row price check your values please !"
+          );
+        }
         await updateDoc(itemUpdated, {
           itemAmount: updateItemAmount + item.itemAmount,
           itemPrice: updateItemPrice,
+          itemPriceBenefitless: updateRowItemPrice,
           chargeDate: new Date(),
         });
+
+        await updateDoc(boxUpdated, {
+          totalMoney:
+            BoxOfficeList[0]?.totalMoney -
+            updateItemAmount * updateRowItemPrice,
+        });
+        await getBoxOffice();
+        await getItemsList();
         setUpdateItemAmount(0);
         setUpdateItemPrice(0);
+        setUpdateRowItemPrice(0);
         await getItemsList();
         alert(`${item.itemName} Charged successfully`);
         setUpdateBox(null);
@@ -122,26 +235,36 @@ const ManageItem = () => {
         <p className="mt-10 mb-1">Amount</p>
         <input
           type="number"
-          className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mb-5 border-slate-200 px-3"
+          className="w-96 bg-stone-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mb-5 border-slate-200 px-3"
           placeholder="Item Amount"
           onChange={(e) => setUpdateItemAmount(Number(e.target.value))}
           value={updateItemAmount}
         />
-        <p className="mt-3 mb-1">Price</p>
+        <p className="mt-3 mb-1">Benefit Price</p>
         <input
           type="number"
-          className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mb-5 border-slate-200 px-3"
+          className="w-96 bg-stone-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mb-5 border-slate-200 px-3"
           placeholder="Item Price"
           onChange={(e) => setUpdateItemPrice(Number(e.target.value))}
           value={updateItemPrice}
+        />
+        <p className="mt-3 mb-1">Row Price</p>
+        <input
+          type="number"
+          className="w-96 bg-stone-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mb-5 border-slate-200 px-3"
+          placeholder="Item Price"
+          onChange={(e) => setUpdateRowItemPrice(Number(e.target.value))}
+          value={updateRowItemPrice}
         />
       </>
     );
   }, [
     setUpdateItemPrice,
     setUpdateItemAmount,
+    setUpdateRowItemPrice,
     updateItemPrice,
     updateItemAmount,
+    updateRowItemPrice,
   ]);
   return (
     <div
@@ -149,13 +272,13 @@ const ManageItem = () => {
         backgroundImage ? "addItem" : "tableBackground"
       }  w-full flex justify-center items-start min-h-[100vh] max-h-[100vh] relative`}
     >
-      <div className="items_shadow w-full min-h-[100vh] max-h-[100vh] p-10 overflow-y-scroll">
+      <div className="items_shadow w-full min-h-[100vh] max-h-[100vh] p-2 md:p-10 overflow-y-scroll">
         <div className="w-full flex items-center justify-end mb-3">
           <button
             onClick={toggleBoxesView}
             className="min-w-20 min-h-20 m-2 flex justify-center items-center"
           >
-            <p className="w-16 h-16 text-slate-50 hover:text-violet-400 hover:bg-slate-900 hover:border-violet-400 border-2 border-slate-50 rounded-lg bg-base-200 flex justify-center items-center text-2xl">
+            <p className="w-16 h-16 text-slate-50 hover:text-violet-400 hover:bg-slate-900 hover:border-violet-400 border-2 border-slate-50 rounded-lg bg-stone-900 flex justify-center items-center text-2xl">
               <span className="text-sm mr-1">
                 {boxesView ? "Boxes" : "Table"}
               </span>
@@ -165,7 +288,7 @@ const ManageItem = () => {
             to="/yaman_project/addItem"
             className="min-w-20 min-h-20 m-2 flex justify-center items-center"
           >
-            <p className="w-16 h-16 text-slate-50 hover:text-violet-400 hover:bg-slate-900 hover:border-violet-400 border-2 border-slate-50 rounded-lg bg-base-200 flex justify-center items-center text-2xl">
+            <p className="w-16 h-16 text-slate-50 hover:text-violet-400 hover:bg-slate-900 hover:border-violet-400 border-2 border-slate-50 rounded-lg bg-stone-900 flex justify-center items-center text-2xl">
               <span className="text-sm mr-1"> + </span> <IoFastFoodOutline />
             </p>
           </Link>
@@ -177,8 +300,8 @@ const ManageItem = () => {
                 <tr
                   className={`${
                     tableColor
-                      ? "bg-base-200 text-white"
-                      : "text-base-200 bg-slate-100"
+                      ? "bg-stone-900 text-white"
+                      : "text-stone-900 bg-slate-100"
                   } `}
                 >
                   <th>
@@ -202,8 +325,8 @@ const ManageItem = () => {
                   <tr
                     className={`${
                       tableColor
-                        ? "table_row w-full hover:bg-base-200"
-                        : "w-full hover:bg-base-200 bg-slate-200 text-base-200"
+                        ? "table_row w-full hover:bg-stone-900"
+                        : "w-full hover:bg-stone-900 bg-slate-200 text-stone-900"
                     } `}
                   >
                     <td colSpan="10">
@@ -213,7 +336,7 @@ const ManageItem = () => {
                       >
                         <svg
                           aria-hidden="true"
-                          className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-violet-400"
+                          className="w-8 h-8 text-stone-200 animate-spin dark:text-stone-600 fill-violet-400"
                           viewBox="0 0 100 101"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
@@ -236,8 +359,8 @@ const ManageItem = () => {
                     key={index}
                     className={`${
                       tableColor
-                        ? "table_row w-full hover:bg-base-200"
-                        : "w-full hover:bg-slate-300 bg-slate-200 text-base-200"
+                        ? "table_row w-full hover:bg-stone-900"
+                        : "w-full hover:bg-slate-300 bg-slate-200 text-stone-900"
                     } `}
                   >
                     <th>{index + 1}</th>
@@ -276,7 +399,7 @@ const ManageItem = () => {
                         />
                       )}
                     </td>
-                    <td>{item.itemPrice}$</td>
+                    <td>{item.itemPrice} IQD </td>
                     <td>
                       <button
                         onClick={() => handleDelete(item)}
@@ -304,7 +427,7 @@ const ManageItem = () => {
           <div className="flex justify-center my-3 w-full" role="status">
             <svg
               aria-hidden="true"
-              className="w-16 h-16 text-gray-200 animate-spin dark:text-gray-600 fill-violet-400"
+              className="w-16 h-16 text-stone-200 animate-spin dark:text-stone-600 fill-violet-400"
               viewBox="0 0 100 101"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -326,7 +449,7 @@ const ManageItem = () => {
             key={item.id}
             className={`${
               !boxesView &&
-              "min-w-80 text-white hover:font-bold hover:bg-slate-50 hover:text-violet-400 float-left m-5 p-10 min-h-32 flex flex-col justify-center items-center border-2 border-violet-400 rounded-md"
+              "min-w-80 text-white hover:font-bold hover:bg-slate-50 hover:text-violet-400 float-left m-2 md:m-4 p-10 min-h-32 flex flex-col justify-center items-center border-2 border-violet-400 rounded-md"
             }`}
           >
             {!boxesView && (
@@ -372,7 +495,7 @@ const ManageItem = () => {
                 </div>
                 <div className="w-full flex items-center justify-between">
                   <p>Price : </p>
-                  <p>{item.itemPrice}$</p>
+                  <p>{item.itemPrice} IQD </p>
                 </div>
                 <div className="w-full flex justify-evenly items-center">
                   <button
@@ -409,13 +532,13 @@ const ManageItem = () => {
                 {inputs}
                 {/* <input
                   type="number"
-                  className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mt-10 mb-5 border-slate-200 px-3"
+                  className="w-96 bg-stone-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] mt-10 mb-5 border-slate-200 px-3"
                   placeholder="Item Amount"
                   onChange={(e) => setUpdateItemAmount(Number(e.target.value))}
                 />
                 <input
                   type="number"
-                  className="w-96 bg-gray-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] my-5 border-slate-200 px-3"
+                  className="w-96 bg-stone-800 bg-opacity-50 border-2 rounded-lg min-h-[40px] my-5 border-slate-200 px-3"
                   placeholder="Item Price"
                   onChange={(e) => setUpdateItemPrice(Number(e.target.value))}
                 /> */}
@@ -427,7 +550,7 @@ const ManageItem = () => {
                     <div className="flex justify-center my-3" role="status">
                       <svg
                         aria-hidden="true"
-                        className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-slate-100"
+                        className="w-8 h-8 text-stone-200 animate-spin dark:text-stone-600 fill-slate-100"
                         viewBox="0 0 100 101"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
