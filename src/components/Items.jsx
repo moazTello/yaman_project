@@ -5,7 +5,7 @@ import "../style/style.css";
 import { FaPaintBrush } from "react-icons/fa";
 import { FaCircleCheck } from "react-icons/fa6";
 import { IoIosCloseCircle } from "react-icons/io";
-
+import toast from "react-hot-toast";
 const Items = () => {
   const {
     items,
@@ -21,12 +21,12 @@ const Items = () => {
   } = useStore();
   const clickHandler = (item) => {
     if (item.itemAmount === 0) {
-      return alert(`No more ${item.itemName}`);
+      return toast.error(`No more ${item.itemName}`);
     }
     const existingItem = soldItems.find((soldItem) => soldItem.item === item);
     if (existingItem) {
       if (existingItem?.item?.itemAmount === existingItem?.localAmount) {
-        return alert(`No more ${item.itemName}`);
+        return toast.error(`No more ${item.itemName}`);
       }
       const updatedList = soldItems.map((soldItem) =>
         soldItem.item === item

@@ -7,21 +7,26 @@ import Login from "./components/Login";
 import AddItems from "./components/AddItems";
 import Invoices from "./components/Invoices";
 import BoxOffice from "./components/BoxOffice";
+import { Fragment } from "react";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/yaman_project" element={<Layout />}>
-        <Route index element={<Login />} />
-        <Route path="/yaman_project/items" element={<Items />} />
-        <Route path="/yaman_project/manageItems">
-          <Route index element={<ManageItem />} />
+    <Fragment>
+      <Routes>
+        <Route path="/yaman_project" element={<Layout />}>
+          <Route index element={<Login />} />
+          <Route path="/yaman_project/items" element={<Items />} />
+          <Route path="/yaman_project/manageItems">
+            <Route index element={<ManageItem />} />
+          </Route>
+          <Route path="/yaman_project/addItem" element={<AddItems />} />
+          <Route path="/yaman_project/invoices" element={<Invoices />} />
+          <Route path="/yaman_project/boxoffice" element={<BoxOffice />} />
         </Route>
-        <Route path="/yaman_project/addItem" element={<AddItems />} />
-        <Route path="/yaman_project/invoices" element={<Invoices />} />
-        <Route path="/yaman_project/boxoffice" element={<BoxOffice />} />
-      </Route>
-    </Routes>
+      </Routes>
+      <Toaster />
+    </Fragment>
   );
 }
 

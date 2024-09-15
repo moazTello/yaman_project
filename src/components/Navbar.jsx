@@ -7,6 +7,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../config/firebase";
 import { IoMdPhotos } from "react-icons/io";
 import { FaEyeSlash } from "react-icons/fa";
+import toast from "react-hot-toast";
 const Navbar = () => {
   const navigate = useNavigate();
   const { setLogedin, toggleBackgroundImage, toggleNavbar } = useStore();
@@ -18,8 +19,7 @@ const Navbar = () => {
       localStorage.setItem("auth", "");
       localStorage.setItem("logedin", false);
     } catch (error) {
-      console.log(error);
-      alert(error);
+      toast.error(error.message);
     }
   };
   return (

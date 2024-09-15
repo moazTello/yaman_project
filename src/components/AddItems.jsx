@@ -4,6 +4,7 @@ import { db } from "../config/firebase";
 import { useStore } from "../context/useStore";
 import "../style/style.css";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 const AddItems = () => {
   const navigate = useNavigate();
   const {
@@ -20,12 +21,12 @@ const AddItems = () => {
   const [loading, setLoding] = useState(false);
   const addItem = async () => {
     if (itemPriceBenefitless * itemAmount > BoxOfficeList[0]?.totalMoney) {
-      return alert(
+      return toast.error(
         "Not Enough Money in the box, Charge the money box before add that amount of item"
       );
     }
     if (itemPrice < itemPriceBenefitless) {
-      return alert("Row Price must be lower then Benefit Price !");
+      return toast.error("Row Price must be lower then Benefit Price !");
     }
     if (
       itemPrice === 0 ||
@@ -33,7 +34,7 @@ const AddItems = () => {
       itemName === "" ||
       itemAmount === 0
     ) {
-      return alert("All fields are required !");
+      return toast.error("All fields are required !");
     }
     setLoding(true);
     try {
@@ -54,12 +55,11 @@ const AddItems = () => {
       });
       await getBoxOffice();
       await getItemsList();
-      alert("Item added successfuly !");
+      toast.success("Item added successfuly !");
       setLoding(false);
       navigate("/yaman_project/manageItems");
     } catch (error) {
-      console.log(error);
-      alert(error);
+      toast.error(error.message);
       setLoding(false);
     }
   };

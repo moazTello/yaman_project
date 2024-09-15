@@ -5,6 +5,7 @@ import moment from "moment";
 import "../style/style.css";
 import { useNavigate } from "react-router-dom";
 import SwainIcon from "../assets/swain_profile.jpg";
+import * as XLSX from "xlsx";
 const Invoices = () => {
   const navigate = useNavigate();
   const {
@@ -34,6 +35,59 @@ const Invoices = () => {
     setTotalBudget(budget);
     // eslint-disable-next-line
   }, []);
+
+  const exportExcel = () => {
+    const data = [
+      [
+        "ID",
+        "Seller",
+        "Invoice Number",
+        "Sold At",
+        "Sold Time",
+        "Items Amount",
+        "Price",
+      ],
+    ];
+    if (invoices) {
+      invoices.forEach((invoice, index) => {
+        data.push([
+          `${index + 1}`,
+          `${invoice.invoiceSeller}`,
+          `${invoice.numberInvoice}`,
+          `${
+            invoice.createdAt
+              ? moment(invoice.createdAt).format("YYYY-MM-DD")
+              : "-"
+          }`,
+          `${
+            invoice.createdAt
+              ? moment(invoice.createdAt).format("HH:mm:ss")
+              : "-"
+          }`,
+          `${invoice.invoiceItems ? invoice.invoiceItems.length : 0}`,
+          `${
+            invoice.invoicePrice
+              ? `${invoice.invoicePrice.toFixed(2)} IQD`
+              : "-"
+          }`,
+        ]);
+      });
+      data.push([
+        "",
+        "",
+        "",
+        "",
+        "",
+        "total : ",
+        `${totalPriceEver.toFixed(2)} IQD`,
+      ]);
+    }
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+    XLSX.writeFile(wb, "data.xlsx");
+  };
+
   return (
     <div
       className={`${
@@ -52,6 +106,14 @@ const Invoices = () => {
                 <span className="text-sm mr-1">
                   {boxesView ? "Boxes" : "Table"}
                 </span>
+              </p>
+            </button>
+            <button
+              onClick={exportExcel}
+              className="min-w-20 min-h-20 m-2 flex justify-center items-center"
+            >
+              <p className="w-16 h-16 text-slate-50 hover:text-violet-400 hover:bg-slate-900 hover:border-violet-400 border-2 border-slate-50 rounded-lg bg-stone-900 flex justify-center items-center text-2xl">
+                <span className="text-sm mr-1">Excel</span>
               </p>
             </button>
           </div>

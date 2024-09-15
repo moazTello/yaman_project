@@ -4,7 +4,7 @@ import { useStore } from "../context/useStore";
 import "../style/style.css";
 import { Link, useNavigate } from "react-router-dom";
 import { db } from "../config/firebase";
-// import SwainIcon from "../assets/swain_profile.jpg";
+import toast from "react-hot-toast";
 import moment from "moment";
 const BoxOffice = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const BoxOffice = () => {
   );
   const addMoney = async () => {
     if (moneyAmount === 0) {
-      return alert("Fill the Amount of Money Please!");
+      return toast.error("Fill the Amount of Money Please!");
     }
     setLoding(true);
     try {
@@ -29,13 +29,12 @@ const BoxOffice = () => {
         chargeDate: new Date(),
       });
       await getBoxOffice();
-      alert("Box Charged successfuly !");
+      toast.success("Box Charged successfuly !");
       setMoneyAmount(0);
       setLoding(false);
       navigate("/yaman_project/manageItems");
     } catch (error) {
-      console.log(error);
-      alert(error);
+      toast.error(error.message);
       setLoding(false);
     }
   };
@@ -48,7 +47,9 @@ const BoxOffice = () => {
         moment(ben?.createdAt).format("YYYY-MMMM") ===
         moment(e.target.value).format("YYYY-MMMM")
     );
-    benMonth ? setBenDate(benMonth) : alert("No benefits found for that month");
+    benMonth
+      ? setBenDate(benMonth)
+      : toast.error("No benefits found for that month");
   };
   useEffect(() => {
     setBenDate(BenefitsList[0]);

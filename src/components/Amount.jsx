@@ -5,6 +5,7 @@ import { addDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 import moment from "moment";
 import axios from "axios";
+import toast from "react-hot-toast";
 const Amount = () => {
   const {
     price,
@@ -30,7 +31,7 @@ const Amount = () => {
   };
   const sellItems = async () => {
     if (soldItems.length === 0) {
-      return alert("No Item to Sell !");
+      return toast.error("No Item to Sell !");
     }
     setLoading(true);
     // eslint-disable-next-line no-restricted-globals
@@ -144,14 +145,13 @@ const Amount = () => {
         }
       );
 
-      alert(`Items Sold successfully`);
+      toast.success(`Items Sold successfully`);
       setSoldItem([]);
       setPrice(0);
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log(error);
-      alert(error);
+      toast.error(error.message);
     }
   };
   return (

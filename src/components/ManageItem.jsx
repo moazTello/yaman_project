@@ -10,6 +10,7 @@ import { db } from "../config/firebase";
 import { FaCircleCheck } from "react-icons/fa6";
 import { IoIosCloseCircle } from "react-icons/io";
 import "../style/style.css";
+import toast from "react-hot-toast";
 const ManageItem = () => {
   const [loading, setLoading] = useState(false);
   const {
@@ -21,31 +22,29 @@ const ManageItem = () => {
     tableColor,
     BoxOfficeList,
     getBoxOffice,
+    items,
   } = useStore();
   const [updateBox, setUpdateBox] = useState(null);
   const [updateItemAmount, setUpdateItemAmount] = useState(0);
   const [updateItemPrice, setUpdateItemPrice] = useState(0);
   const [updateRowItemPrice, setUpdateRowItemPrice] = useState(0);
-  const {
-    items,
-    // , setItems, rowItemsCollection
-  } = useStore();
 
   const handleDelete = async (item) => {
     // eslint-disable-next-line no-restricted-globals
     var result = confirm("Want to delete?");
     if (!result) return;
     if (item.itemAmount !== 0) {
-      return alert("The Item Amount is not empty yet, you can't delete it !");
+      return toast.error(
+        "The Item Amount is not empty yet, you can't delete it !"
+      );
     }
     try {
       const itemDeleted = doc(db, "rowItems", item.id);
       await deleteDoc(itemDeleted);
       await getItemsList();
-      alert("Item deleted successfuly!");
+      toast.success("Item deleted successfuly!");
     } catch (error) {
-      console.log(error);
-      alert(error);
+      toast.error(error.message);
     }
   };
 
@@ -69,7 +68,7 @@ const ManageItem = () => {
         );
         if (item.itemPriceBenefitless >= updateItemPrice) {
           setLoading(false);
-          return alert(
+          return toast.error(
             "the benefit price is lower than the row price check your values please !"
           );
         }
@@ -81,7 +80,7 @@ const ManageItem = () => {
         setUpdateItemPrice(0);
         setUpdateRowItemPrice(0);
         await getItemsList();
-        alert(`${item.itemName} Price Updated successfully`);
+        toast.success(`${item.itemName} Price Updated successfully`);
         setUpdateBox(null);
       } else if (
         updateItemAmount === 0 &&
@@ -94,7 +93,7 @@ const ManageItem = () => {
         );
         if (item.itemPrice <= updateRowItemPrice) {
           setLoading(false);
-          return alert(
+          return toast.error(
             "the benefit price is lower than the row price check your values please !"
           );
         }
@@ -106,7 +105,7 @@ const ManageItem = () => {
         setUpdateItemPrice(0);
         setUpdateRowItemPrice(0);
         await getItemsList();
-        alert(`${item.itemName} Price Updated successfully`);
+        toast.success(`${item.itemName} Price Updated successfully`);
         setUpdateBox(null);
       } else if (
         updateItemAmount === 0 &&
@@ -115,7 +114,7 @@ const ManageItem = () => {
       ) {
         if (updateItemPrice <= updateRowItemPrice) {
           setLoading(false);
-          return alert(
+          return toast.error(
             "the benefit price is lower than the row price check your values please !"
           );
         }
@@ -127,7 +126,7 @@ const ManageItem = () => {
         setUpdateItemPrice(0);
         setUpdateRowItemPrice(0);
         await getItemsList();
-        alert(`${item.itemName} Price Updated successfully`);
+        toast.success(`${item.itemName} Price Updated successfully`);
         setUpdateBox(null);
       } else if (
         updateItemPrice === 0 &&
@@ -140,14 +139,14 @@ const ManageItem = () => {
             "telloyaman@gmail.com"
         ) {
           setLoading(false);
-          return alert("Not allowed nigative amount");
+          return toast.error("Not allowed nigative amount");
         }
         if (
           BoxOfficeList[0]?.totalMoney <
           updateItemAmount * item.itemPriceBenefitless
         ) {
           setLoading(false);
-          return alert("Not Enough money in the box !");
+          return toast.error("Not Enough money in the box !");
         }
         // eslint-disable-next-line no-restricted-globals
         let resultAmount = confirm(
@@ -175,7 +174,7 @@ const ManageItem = () => {
         setUpdateItemAmount(0);
         setUpdateItemPrice(0);
         setUpdateRowItemPrice(0);
-        alert(`${item.itemName} Charged successfully`);
+        toast.success(`${item.itemName} Charged successfully`);
         setUpdateBox(null);
       } else if (
         updateItemPrice === 0 &&
@@ -183,7 +182,9 @@ const ManageItem = () => {
         updateRowItemPrice === 0
       ) {
         setLoading(false);
-        return alert("Please insert price or amount to complete the procces.");
+        return toast.error(
+          "Please insert price or amount to complete the procces."
+        );
       } else if (
         updateItemAmount > 0 &&
         updateItemPrice > 0 &&
@@ -194,11 +195,11 @@ const ManageItem = () => {
           updateItemAmount * updateRowItemPrice
         ) {
           setLoading(false);
-          return alert("Not Enough money in the box !");
+          return toast.error("Not Enough money in the box !");
         }
         if (updateRowItemPrice >= updateItemPrice) {
           setLoading(false);
-          return alert(
+          return toast.error(
             "the benefit price is lower than the row price check your values please !"
           );
         }
@@ -220,13 +221,12 @@ const ManageItem = () => {
         setUpdateItemPrice(0);
         setUpdateRowItemPrice(0);
         await getItemsList();
-        alert(`${item.itemName} Charged successfully`);
+        toast.success(`${item.itemName} Charged successfully`);
         setUpdateBox(null);
       }
       setLoading(false);
     } catch (error) {
-      console.log(error);
-      alert(error);
+      toast.error(error.message);
     }
   };
   const inputs = useMemo(() => {

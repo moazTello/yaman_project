@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { db } from "../config/firebase";
 import { query, getDocs, collection, orderBy } from "firebase/firestore";
+import toast from "react-hot-toast";
 export const StoreContext = createContext();
 
 export const useStore = () => {
@@ -100,8 +101,7 @@ export const UseStoreProvider = ({ children }) => {
         setItems(dataDTO);
       }
     } catch (error) {
-      console.log(error);
-      alert(error);
+      toast.error(error.message);
     }
   };
   const getBoxOffice = async () => {
@@ -123,8 +123,7 @@ export const UseStoreProvider = ({ children }) => {
         setBoxOfficeList(dataDTO);
       }
     } catch (error) {
-      console.log(error);
-      alert(error);
+      toast.error(error.message);
     }
   };
   const getInvoicesList = async () => {
@@ -149,8 +148,7 @@ export const UseStoreProvider = ({ children }) => {
         setInvoices(dataDTO);
       }
     } catch (error) {
-      console.log(error);
-      alert(error);
+      toast.error(error.message);
     }
   };
   const getBenefitsList = async () => {
@@ -175,8 +173,7 @@ export const UseStoreProvider = ({ children }) => {
         setBenefitsList(dataDTO);
       }
     } catch (error) {
-      console.log(error);
-      alert(error);
+      toast.error(error.message);
     }
   };
   useEffect(() => {
