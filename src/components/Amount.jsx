@@ -118,32 +118,22 @@ const Amount = () => {
         }
       }
       await getBenefitsList();
-      await axios.post(
-        `https://api.telegram.org/bot7499357866:AAGwYJG2UZGxZKp6RDo9aeR5SNKqP1PNJpA/sendMessage`,
-        {
-          chat_id: 1018056393,
-          text: `Seller : ${
-            JSON.parse(localStorage?.getItem("auth")).email
-          } \nInvoice Number : ${
-            invoices?.length + 1
-          } \nPrice : ${price.toFixed(
-            3
-          )} IQD \nSold Items : \n {\n ${telegramItems} }\nInvoice Benefit : ${Benefit} IQD`,
-        }
-      );
-      await axios.post(
-        `https://api.telegram.org/bot7499357866:AAGwYJG2UZGxZKp6RDo9aeR5SNKqP1PNJpA/sendMessage`,
-        {
-          chat_id: 969682407,
-          text: `Seller : ${
-            JSON.parse(localStorage?.getItem("auth")).email
-          } \nInvoice Number : ${
-            invoices?.length + 1
-          } \nPrice : ${price.toFixed(
-            3
-          )} IQD \nSold Items : \n {\n ${telegramItems} }\nInvoice Benefit : ${Benefit} IQD`,
-        }
-      );
+      await axios.post(process.env.REACT_APP_TELEGRAM_BOT, {
+        chat_id: process.env.REACT_APP_TELEGRAM_MOAZ_CHAT_ID,
+        text: `Seller : ${
+          JSON.parse(localStorage?.getItem("auth")).email
+        } \nInvoice Number : ${invoices?.length + 1} \nPrice : ${price.toFixed(
+          3
+        )} IQD \nSold Items : \n {\n ${telegramItems} }\nInvoice Benefit : ${Benefit} IQD`,
+      });
+      await axios.post(process.env.REACT_APP_TELEGRAM_BOT, {
+        chat_id: process.env.REACT_APP_TELEGRAM_YAMAN_CHAT_ID,
+        text: `Seller : ${
+          JSON.parse(localStorage?.getItem("auth")).email
+        } \nInvoice Number : ${invoices?.length + 1} \nPrice : ${price.toFixed(
+          3
+        )} IQD \nSold Items : \n {\n ${telegramItems} }\nInvoice Benefit : ${Benefit} IQD`,
+      });
 
       toast.success(`Items Sold successfully`);
       setSoldItem([]);
@@ -268,6 +258,3 @@ const Amount = () => {
 };
 
 export default Amount;
-
-// get telegram chat id
-// https://api.telegram.org/bot7499357866:AAGwYJG2UZGxZKp6RDo9aeR5SNKqP1PNJpA/getUpdates
