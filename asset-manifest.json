@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/yaman_project/static/css/main.ae1c860d.css",
-    "main.js": "/yaman_project/static/js/main.30c03f76.js",
+    "main.css": "/yaman_project/static/css/main.ef6f66cb.css",
+    "main.js": "/yaman_project/static/js/main.4bada330.js",
     "static/media/khazix.jpg": "/yaman_project/static/media/khazix.1ad193df752151e66bc0.jpg",
     "static/media/table.jpeg": "/yaman_project/static/media/table.571bfb476a2a2d1a32f2.jpeg",
     "static/media/jhin.jpg": "/yaman_project/static/media/jhin.4e232714d6b236746703.jpg",
@@ -9,11 +9,11 @@
     "static/media/swain.jpg": "/yaman_project/static/media/swain.6f48c97911f0419e4182.jpg",
     "static/media/swain_profile.jpg": "/yaman_project/static/media/swain_profile.abf0d37df943f225f189.jpg",
     "index.html": "/yaman_project/index.html",
-    "main.ae1c860d.css.map": "/yaman_project/static/css/main.ae1c860d.css.map",
-    "main.30c03f76.js.map": "/yaman_project/static/js/main.30c03f76.js.map"
+    "main.ef6f66cb.css.map": "/yaman_project/static/css/main.ef6f66cb.css.map",
+    "main.4bada330.js.map": "/yaman_project/static/js/main.4bada330.js.map"
   },
   "entrypoints": [
-    "static/css/main.ae1c860d.css",
-    "static/js/main.30c03f76.js"
+    "static/css/main.ef6f66cb.css",
+    "static/js/main.4bada330.js"
   ]
 }
