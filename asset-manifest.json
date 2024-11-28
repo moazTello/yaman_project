@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/yaman_project/static/css/main.5fe25eca.css",
-    "main.js": "/yaman_project/static/js/main.00706b17.js",
+    "main.js": "/yaman_project/static/js/main.af0cf7db.js",
     "static/media/khazix.jpg": "/yaman_project/static/media/khazix.1ad193df752151e66bc0.jpg",
     "static/media/table.jpeg": "/yaman_project/static/media/table.571bfb476a2a2d1a32f2.jpeg",
     "static/media/jhin.jpg": "/yaman_project/static/media/jhin.4e232714d6b236746703.jpg",
@@ -10,10 +10,10 @@
     "static/media/swain_profile.jpg": "/yaman_project/static/media/swain_profile.abf0d37df943f225f189.jpg",
     "index.html": "/yaman_project/index.html",
     "main.5fe25eca.css.map": "/yaman_project/static/css/main.5fe25eca.css.map",
-    "main.00706b17.js.map": "/yaman_project/static/js/main.00706b17.js.map"
+    "main.af0cf7db.js.map": "/yaman_project/static/js/main.af0cf7db.js.map"
   },
   "entrypoints": [
     "static/css/main.5fe25eca.css",
-    "static/js/main.00706b17.js"
+    "static/js/main.af0cf7db.js"
   ]
 }
